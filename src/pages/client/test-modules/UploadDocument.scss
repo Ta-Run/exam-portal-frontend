@@ -1,0 +1,133 @@
+.upload-docs-class {
+    display: grid;
+    grid-template-rows: 65% 45%; // First row takes 75%, second row takes 25%
+    gap: 20px;
+    height: 100vh; // Makes the grid take the full height of the viewport
+
+
+
+    .instruction-class {
+        background-color: #FFFFFF; // Proper white background
+        padding: 20px;
+        border-radius: 10px;
+        position: relative; // Ensure the pseudo-element is positioned relative to this container
+      
+        // Drawing the horizontal line
+        &::after {
+          content: '';
+          position: absolute;
+          width: 950px; // Set the desired width of the line
+          height: 1px; // Height of the line
+          background-color: #000; // Set the line color (black, you can change it)
+          top: 54px; // Position it according to your specifications
+          left: 25px; // Horizontal position
+          opacity: 1; // Set the opacity
+          transform: rotate(0deg); // Set the angle of rotation (0 deg, horizontal)
+        }
+      
+        .sub-name {
+          margin-bottom: 10px; // Space below the sub-name
+          font-weight: bold; // Bold text for emphasis
+          font-size: 18px; // Adjust size if needed
+        }
+      
+        .time-duration {
+          margin-bottom: 20px; // Space below the time duration
+          font-style: italic; // Italicize for emphasis
+        }
+      
+        h2 {
+          text-align: center; // Center align the h2 heading
+          margin-top: 30px; // Space above the heading
+          margin-bottom: 20px; // Space below the heading
+          font-size: 24px; // Adjust font size if needed
+          font-weight: 600; // Bold text
+        }
+      
+        ol {
+          margin-bottom: 20px; // Space below the ordered list
+          padding-left: 20px; // Add padding to align with list items
+      
+          li {
+            margin-bottom: 10px; // Space between list items
+          }
+        }
+      
+        h1 {
+          text-align: center; // Center align the h1 heading
+          margin-top: 40px; // Space above the heading
+          font-size: 28px; // Adjust font size if needed
+          font-weight: 700; // Bold text
+          color: #333; // Dark color for visibility
+        }
+      }
+
+
+
+    .upload-box {
+        background-color: #FFFFFF; 
+        display: flex;
+        flex-direction: column; // Stack items vertically
+        gap: 20px; // Space between the rows
+
+        
+      
+        .file-upload-row {
+          display: flex;
+          align-items: center; // Align items vertically
+          gap: 20px; // Space between the image and the input
+
+          
+      
+          .icon-box {
+            width: 230px; // Adjust width as needed
+            height: 200px; // Adjust height as needed
+            background-color: #E6E6E6; // Background color
+            border: 1px solid #ccc; // Border around the box
+            border-radius: 10px; // Optional: rounded corners
+            display: flex; // Use flexbox to center the image and content
+            flex-direction: column;
+            align-items: center; // Vertically center the content
+            justify-content: center; // Horizontally center the content
+            padding: 10px; // Padding inside the box
+            box-sizing: border-box; // Include padding and border in width and height
+      
+            img {
+              max-width: 100%; // Ensure the image scales correctly
+              max-height: 100%; // Ensure the image scales correctly
+              object-fit: contain; // Maintain aspect ratio
+              margin-bottom: 10px; // Space between image and label
+            }
+      
+            label {
+              margin-bottom: 5px; // Space between label and input
+              font-size: 14px; // Adjust font size if needed
+            }
+      
+            input[type="file"] {
+              cursor: pointer; // Change cursor to pointer for file input
+            }
+          }
+        }
+      
+        .start-exam-button {
+          display: flex;
+          justify-content: center; // Center the button horizontally
+      
+          button {
+            background-color: green; // Button background color
+            color: white; // Button text color
+            padding: 10px 20px; // Padding inside the button
+            border: none; // Remove border
+            border-radius: 5px; // Rounded corners
+            font-size: 16px; // Adjust font size
+            cursor: pointer; // Pointer cursor on hover
+      
+            &:hover {
+              background-color: darkgreen; // Darker color on hover
+            }
+          }
+        }
+      }
+      
+}

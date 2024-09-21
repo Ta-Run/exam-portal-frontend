@@ -1,0 +1,118 @@
+@import "../../../css/variables.scss";
+
+.left-side-nav-area {
+    background-color: $color3;
+    height: 100vh;
+    overflow: scroll;
+    border-radius: 0 30px 30px 0;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .top-logo-image {
+        padding: 50px 25px;
+
+        h1 {
+            font-family: $Josefin;
+            font-size: 4.6rem;
+            font-weight: 700;
+            color: $color1;
+        }
+    }
+
+    .navigation-menus .accordion {
+        .accordion-item {
+            background: transparent;
+            border: none;
+
+            a.active {
+                .accordion-header button {
+                    background-color: $color5;
+                    color: $color6;
+
+                    span svg path {
+                        fill: $color6 ;
+                        transition: all 0.3s linear;
+                    }
+                }
+            }
+
+            .accordion-header button {
+                font-size: 1.8rem;
+                font-weight: 400;
+                background: transparent;
+                color: $color1;
+                padding: 15px 30px;
+                border-radius: 30px 0px 0px 30px;
+                position: relative;
+                transition: all 0.1s linear;
+
+                &::before {
+                    position: absolute;
+                    content: "";
+                    width: 20px;
+                    height: 20px;
+                    background: transparent;
+                    border-bottom-right-radius: 20px;
+                    top: -20px;
+                    right: 0;
+                    transition: all 0s;
+                    // box-shadow: 7.5px 7.5px 0 7.5px $color5;
+                }
+
+                &::after {
+                    display: none;
+                }
+
+                &:focus {
+                    box-shadow: none;
+                }
+
+                &:not(.collapsed) {
+                    box-shadow: none;
+                    // background: $color5;
+                    // color: $color6;
+                    background: transparent;
+
+                    // &::before {
+                    //     // top: -20px;
+                    //     box-shadow: 7.5px 7.5px 0 7.5px $color5;
+                    // }
+
+                    // span svg path {
+                    //     fill: $color6 ;
+                    // }
+                }
+
+                span {
+                    width: 30px;
+                    margin-right: 10px;
+                }
+            }
+
+            .accordion-body {
+                padding: 5px 30px 10px 30px;
+
+                .accordian-inner-navlists ul li {
+                    margin: 5px 0;
+
+                    a {
+                        font-size: 1.6rem;
+                        font-weight: 300;
+                        color: $color4;
+
+                        &.active {
+                            color: $color7;
+                        }
+
+                        i {
+                            font-size: 1.4rem;
+                            margin-right: 20px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

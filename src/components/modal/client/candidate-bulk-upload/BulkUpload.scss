@@ -1,0 +1,89 @@
+@import "../../../../css/variables.scss";
+
+.upload-modal {
+    box-shadow: 0 0 21.1px 0 rgba(0, 0, 0, 0.05);
+    padding: 0;
+
+    .modal-content {
+        border: none;
+
+        .modal-header {
+            justify-content: space-between;
+            padding: 25px 25px 10px 25px;
+            border-bottom: none;
+
+            .modal-title {
+                font-family: $judson;
+                font-weight: 700;
+                font-size: 2.4rem;
+            }
+
+            .close-btn {
+                border: none;
+                outline: none;
+                background-color: transparent;
+
+                i {
+                    font-size: 2.2rem;
+                }
+            }
+        }
+
+        .modal-body {
+            padding-top: 0;
+
+            form {
+                padding: 10px 15px 5px 15px;
+
+                .form-label {
+                    font-weight: 400;
+                    font-size: 1.4rem;
+                    color: #454443;
+                }
+
+                .batch_upload_file_input {
+                    border: 0.84px solid #dddddd;
+                    border-radius: 2.53px;
+                    background-color: #fafafa;
+                    color: #aaaaaa;
+                    font-weight: 300;
+                    font-size: 1.2rem;
+                    margin: 0 auto;
+                    height: 4.6rem;
+                    padding: 1.1rem;
+
+                    &:focus {
+                        box-shadow: none;
+                    }
+                }
+
+                .batch_upload_file_input[type="file"]::-webkit-file-upload-button {
+                    background-color: #4f86f8;
+                    border: none;
+                    outline: none;
+                    border-radius: 2.43px;
+                    color: $color1;
+                    cursor: pointer;
+                    font-weight: 500;
+                    font-size: 1.2rem;
+                    padding: 0.7rem 2.5rem;
+                    margin-left: 0.1rem;
+                }
+
+                .submit-btn {
+                    background-color: #201d48;
+                    color: $color1;
+                    font-weight: 500;
+                    font-size: 1.8rem;
+                    margin: 10px auto 15px auto;
+                    padding: 7px 170px;
+                    height: 4rem;
+                    border: none;
+                    outline: none;
+                    border-radius: 3.38px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,276 @@
+@import "../../../css/variables.scss";
+
+.open-ticket-section {
+    .management-add {
+        background-color: #00A65A;
+        border: none;
+        outline: none;
+        border-radius: 2.88px;
+        color: $color1;
+        font-weight: 500;
+        font-size: 1.2rem;
+        padding: 10px 25px;
+        margin-bottom: 20px;
+    }
+
+    .open-ticket-body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .open-ticket-filters {
+            display: flex;
+            align-items: center;
+
+            .form-select {
+                box-shadow: inset -8px 7px 15px 0 rgba(0, 0, 0, 0.15);
+                color: $color13;
+                font-weight: 400;
+                font-size: 1.2rem;
+                margin-right: 0.7rem;
+                padding: 10px 50px 10px 20px;
+                border: 1px solid #ebecee;
+            }
+
+            .search-input {
+                position: relative;
+
+                input {
+                    min-width: 280px;
+                    padding: 10px 95px 10px 20px;
+                    outline: none;
+                    border-radius: 3.88px;
+                    font-weight: 400;
+                    font-size: 1.2rem;
+                    background-color: $color1;
+                    box-shadow: inset -8px 7px 15px 0 rgba(0, 0, 0, 0.15);
+                    border: 1px solid #ebecee;
+
+                    &::placeholder {
+                        color: $color13;
+                        font-weight: 400;
+                        font-size: 1.2rem;
+                    }
+                }
+
+                .search-btn {
+                    position: absolute;
+                    right: 0px;
+                    top: 0px;
+                    background-color: $color3;
+                    border: none;
+                    outline: none;
+                    border-radius: 2.88px;
+                    width: auto;
+                    height: 100%;
+                    color: $color1;
+                    font-weight: 400;
+                    font-size: 1.7rem;
+                    padding: 0 20px;
+                }
+            }
+        }
+
+        .open-ticket-downloads {
+            display: flex;
+            align-items: center;
+
+            .management-download-btns {
+                border: 1px solid #bfbfbf;
+                background-color: $color1;
+                outline: none;
+                border-radius: 5.25px;
+                padding: 0.6rem;
+                box-shadow: 0 0 11.25px 0 rgba(0, 0, 0, 0.05);
+
+                svg {
+                    width: 24px;
+                    height: 24px;
+                }
+            }
+        }
+    }
+
+    .open-ticket-table {
+        margin-top: 15px;
+
+        .content-table {
+            thead tr {
+                th {
+                    background-color: $color3;
+                    font-weight: 400;
+                    font-size: 1.4rem;
+                    color: $color1;
+                    padding: 10px 20px;
+                    box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.05);
+                    white-space: nowrap;
+
+                    &:nth-child(1) {
+                        border-top-left-radius: 10px;
+                    }
+
+                    &:last-child {
+                        border-top-right-radius: 10px;
+                    }
+
+                    svg {
+                        margin-left: 0.5rem;
+                        width: 14px;
+                        height: 14px;
+                        fill: #fff;
+                    }
+                }
+            }
+
+            tbody tr {
+                td {
+                    border-right: 1px solid #dbdbdb;
+                    border-bottom: 1px solid #dbdbdb;
+                    padding: 15px 16px;
+
+                    .table_desc {
+                        font-weight: 400;
+                        font-size: 1.2rem;
+                    }
+
+                    .table-img {
+                        width: 42px;
+                        height: 42px;
+                    }
+
+                    .table_icons {
+                        display: flex;
+                        align-items: center;
+
+                        .table-btn {
+                            border: 1px solid #bfbfbf;
+                            background-color: $color1;
+                            outline: none;
+                            border-radius: 5.25px;
+                            padding: 5px;
+                            box-shadow: 0 0 11.25px 0 rgba(0, 0, 0, 0.05);
+
+                            svg {
+                                width: 24px;
+                                height: 24px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .open-ticket-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        margin-top: 20px;
+
+        .pagination-text {
+            color: #414e62;
+            font-weight: 400;
+            font-size: 1.5rem;
+            margin-right: 5px;
+        }
+
+        .pagination {
+            .pagination-link {
+                background-color: #d5d8dd;
+                border-radius: 5.83px;
+                margin-right: 5px;
+
+                .pagination-btn {
+                    border: none;
+                    outline: none;
+                    background-color: transparent;
+                    padding: 8px 15px;
+                    font-weight: 500;
+                    font-size: 1.2rem;
+                    color: #414e62;
+                }
+            }
+
+            .pagination-link.active {
+                background-color: #201d48;
+                color: $color1;
+
+                .pagination-btn {
+                    color: $color1;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1440px) {
+    .open-ticket-section {
+        .open-ticket-table {
+            .content-table {
+                thead tr {
+                    th {
+                        font-size: 1.2rem;
+                    }
+                }
+
+                tbody tr {
+                    td {
+                        min-width: 160px;
+
+                        .table-img {
+                            width: 60px;
+                            height: 60px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .open-ticket-section {
+        .open-ticket-body {
+            flex-direction: column;
+            align-items: start;
+
+            .open-ticket-downloads {
+                margin-top: 0.5rem;
+                justify-content: end;
+                width: 100%;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .open-ticket-section {
+        .open-ticket-body {
+            .open-ticket-filters {
+                flex-direction: column;
+                width: 100%;
+
+                .form-select {
+                    margin-bottom: 15px;
+                    margin-right: 0;
+                }
+
+                .search-input {
+                    width: 100%;
+
+                    input {
+                        min-width: 100%;
+                    }
+                }
+            }
+
+            .open-ticket-downloads {
+                margin-top: 1.5rem;
+
+                .management-add {
+                    padding: 10px 15px;
+                }
+            }
+        }
+    }
+}

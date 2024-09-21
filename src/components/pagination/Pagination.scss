@@ -1,0 +1,42 @@
+@import "../../css/variables.scss";
+
+.portal-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin-top: 20px;
+
+    .pagination-text {
+        color: #414e62;
+        font-weight: 400;
+        font-size: 1.5rem;
+        margin-right: 5px;
+    }
+
+    .pagination {
+        .pagination-link {
+            background-color: #d5d8dd;
+            border-radius: 5.83px;
+            margin-right: 5px;
+
+            .pagination-btn {
+                border: none;
+                outline: none;
+                background-color: transparent;
+                padding: 8px 15px;
+                font-weight: 500;
+                font-size: 1.2rem;
+                color: #414e62;
+            }
+        }
+
+        .pagination-link.active {
+            background-color: #201d48;
+            color: $color1;
+
+            .pagination-btn {
+                color: $color1;
+            }
+        }
+    }
+}

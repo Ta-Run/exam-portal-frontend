@@ -1,0 +1,157 @@
+@import "../../../css/variables.scss";
+
+.client-user-manual-section {
+    .top-main-title {
+        font-family: "Judson";
+        font-weight: 700;
+        font-size: 2.2rem;
+        color: #3F3C53;
+        margin-bottom: 15px;
+    }
+
+    .table-box-default {
+        box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        border-radius: 10px;
+        margin-bottom: 20px;
+
+        .box-header {
+            padding: 10px;
+            border-bottom: 1px solid #f4f4f4;
+            text-align: center;
+
+            .box-title {
+                font-size: 2.5rem;
+                font-weight: 500;
+                border-bottom: 2px solid;
+                display: inline-block;
+                color: $color3;
+            }
+        }
+
+        .box-body {
+            padding: 15px 50px;
+
+            ul {
+                padding-left: 60px;
+            }
+
+            p {
+                font-size: 1.7rem;
+                font-weight: 300;
+                color: $color8;
+            }
+
+            img {
+                border: 2px solid;
+                margin: 7px 0;
+            }
+
+            .upper-ul {
+                font-size: 16px;
+                font-weight: 300;
+                margin: 0 0 10px 10px;
+
+                li {
+                    list-style: disc;
+                }
+            }
+
+            .box-title {
+                font-size: 1.8rem;
+                font-weight: 400;
+                text-decoration: underline;
+            }
+
+            .user-manual {
+                .top-name {
+                    border-bottom: 2px solid;
+
+                    .for-header {
+                        font-size: 2.4rem;
+                        color: $color3;
+                        font-weight: 400;
+                        margin-top: 10px;
+                    }
+                }
+
+                .table-box-ol {
+                    margin-top: 15px;
+                    padding-left: 30px;
+                    list-style: decimal !important;
+
+                    li {
+                        font-size: 1.8rem;
+                        font-weight: 400;
+                        list-style: decimal;
+                        color: #333;
+
+                        a {
+                            color: #333;
+                            font-weight: 400;
+                        }
+                    }
+
+                    .nest-ul {
+
+                        li {
+                            list-style: circle !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Media query
+
+@media (max-width:575px) {
+    .client-user-manual-section {
+        .top-main-title {
+            font-size: 2rem;
+        }
+
+        .table-box-default {
+            .box-header {
+                padding: 5px;
+
+                .box-title {
+                    font-size: 1.8rem;
+                }
+            }
+
+            .box-body {
+                padding: 10px;
+
+                ul {
+                    padding-left: 20px;
+                }
+
+                img {
+                    width: 100% !important;
+                }
+
+                .box-title {
+                    font-size: 1.5rem;
+                }
+
+                .user-manual {
+                    .top-name {
+                        .for-header {
+                            font-size: 2rem;
+                            margin-top: 5px;
+                        }
+                    }
+
+                    .table-box-ol {
+
+                        li {
+                            font-size: 1.6rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

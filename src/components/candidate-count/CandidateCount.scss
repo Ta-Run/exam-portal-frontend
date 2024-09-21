@@ -1,0 +1,15 @@
+@import "../../css/variables.scss";
+
+.candidate-count-chart {
+    background-color: $color1;
+    box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
+    padding: 10px 30px 10px 0px;
+    border-radius: 10px;
+
+    .notes {
+        font-size: 1.5rem;
+        font-weight: 300;
+        color: #69686F;
+        padding-left: 20px;
+    }
+}

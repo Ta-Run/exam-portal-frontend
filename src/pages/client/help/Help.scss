@@ -1,0 +1,44 @@
+@import "../../../css/variables.scss";
+
+.help-video-section {
+    .main-title {
+        font-family: $judson;
+        font-weight: 700;
+        font-size: 2.2rem;
+        color: $color8;
+        margin-bottom: 15px;
+    }
+
+    .videos-collection-area {
+        .card-body {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+            margin-bottom: 20px;
+        }
+
+        .video-post-content {
+            padding: 20px;
+
+            h3 {
+                font-size: 1.8rem;
+                font-weight: 500;
+                color: $color9;
+            }
+        }
+    }
+}
+
+// Media Query
+
+@media (max-width:575px) {
+    .help-video-section .videos-collection-area .video-post-content {
+        padding: 10px;
+
+        h3 {
+            font-size: 1.5rem;
+        }
+    }
+}

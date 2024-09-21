@@ -1,0 +1,125 @@
+@import "../../../css/variables.scss";
+
+.sector-canvas {
+    box-shadow: 0 0 21.1px 0 rgba(0, 0, 0, 0.05);
+    padding: 0;
+
+    .sector-header {
+        justify-content: space-between;
+        padding: 20px;
+
+        .offcanvas-title {
+            font-family: $judson;
+            font-weight: 700;
+            font-size: 2.4rem;
+        }
+
+        .close-btn {
+            border: none;
+            outline: none;
+            background-color: transparent;
+
+            i {
+                font-size: 2.2rem;
+            }
+        }
+    }
+
+    .sector-body {
+        padding: 0 20px 20px 20px;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        form {
+            .form-label {
+                font-weight: 400;
+                font-size: 1.4rem;
+                color: #454443;
+            }
+
+            .form-select {
+                border: 0.84px solid #DDDDDD;
+                border-radius: 2.53px;
+                background-color: #FAFAFA;
+                font-weight: 400;
+                font-size: 1.2rem;
+                width: 100%;
+                height: 4.6rem;
+
+                &:focus {
+                    box-shadow: none;
+                }
+
+                option {
+                    font-weight: 400;
+                    font-size: 1.2rem;
+                }
+            }
+
+            .sector_input {
+                border: 0.84px solid #DDDDDD;
+                border-radius: 2.53px;
+                background-color: #FAFAFA;
+                font-weight: 400;
+                font-size: 1.2rem;
+                width: 100%;
+                height: 4.6rem;
+
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+
+            .err-msg {
+                font-size: 1.3rem;
+            }
+
+            .sector_file_input {
+                border: 0.84px solid #DDDDDD;
+                border-radius: 2.53px;
+                background-color: #FAFAFA;
+                color: #AAAAAA;
+                font-weight: 300;
+                font-size: 1.2rem;
+                width: 100%;
+                height: 4.6rem;
+                padding: 1.1rem;
+
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+
+            .sector_file_input[type="file"]::-webkit-file-upload-button {
+                background-color: #4F86F8;
+                border: none;
+                outline: none;
+                border-radius: 2.43px;
+                color: $color1;
+                cursor: pointer;
+                font-weight: 500;
+                font-size: 1.2rem;
+                padding: .7rem 2.5rem;
+                margin-left: 0.1rem;
+            }
+
+            .submit-btn {
+                background-color: #201D48;
+                color: $color1;
+                font-weight: 500;
+                font-size: 1.8rem;
+                width: 100%;
+                height: 4rem;
+                border: none;
+                outline: none;
+                border-radius: 3.38px;
+            }
+        }
+    }
+}
+
+.offcanvas.offcanvas-end {
+    border-left: none !important;
+}
