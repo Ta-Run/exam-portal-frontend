@@ -1,133 +1,189 @@
 .upload-docs-class {
-    display: grid;
-    grid-template-rows: 65% 45%; // First row takes 75%, second row takes 25%
-    gap: 20px;
-    height: 100vh; // Makes the grid take the full height of the viewport
+  display: grid;
+  grid-template-rows: 65% 45%;
+  gap: 0px;
+  min-height: 100vh;
+}
 
+.instruction-class {
+  background-color: #FFFFFF;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  margin-bottom: 70px;
+}
 
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
-    .instruction-class {
-        background-color: #FFFFFF; // Proper white background
-        padding: 20px;
-        border-radius: 10px;
-        position: relative; // Ensure the pseudo-element is positioned relative to this container
-      
-        // Drawing the horizontal line
-        &::after {
-          content: '';
-          position: absolute;
-          width: 950px; // Set the desired width of the line
-          height: 1px; // Height of the line
-          background-color: #000; // Set the line color (black, you can change it)
-          top: 54px; // Position it according to your specifications
-          left: 25px; // Horizontal position
-          opacity: 1; // Set the opacity
-          transform: rotate(0deg); // Set the angle of rotation (0 deg, horizontal)
-        }
-      
-        .sub-name {
-          margin-bottom: 10px; // Space below the sub-name
-          font-weight: bold; // Bold text for emphasis
-          font-size: 18px; // Adjust size if needed
-        }
-      
-        .time-duration {
-          margin-bottom: 20px; // Space below the time duration
-          font-style: italic; // Italicize for emphasis
-        }
-      
-        h2 {
-          text-align: center; // Center align the h2 heading
-          margin-top: 30px; // Space above the heading
-          margin-bottom: 20px; // Space below the heading
-          font-size: 24px; // Adjust font size if needed
-          font-weight: 600; // Bold text
-        }
-      
-        ol {
-          margin-bottom: 20px; // Space below the ordered list
-          padding-left: 20px; // Add padding to align with list items
-      
-          li {
-            margin-bottom: 10px; // Space between list items
-          }
-        }
-      
-        h1 {
-          text-align: center; // Center align the h1 heading
-          margin-top: 40px; // Space above the heading
-          font-size: 28px; // Adjust font size if needed
-          font-weight: 700; // Bold text
-          color: #333; // Dark color for visibility
-        }
-      }
+.sub-name {
+  font-weight: bold;
+  font-size: 20px;
+}
 
+.time-duration {
+  color: red;
+  font-size: 18px;
+}
 
+.instruction-class::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  top: 54px;
+  left: 0;
+  opacity: 1;
+}
 
-    .upload-box {
-        background-color: #FFFFFF; 
-        display: flex;
-        flex-direction: column; // Stack items vertically
-        gap: 20px; // Space between the rows
+.instruction-class h2 {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+}
 
-        
-      
-        .file-upload-row {
-          display: flex;
-          align-items: center; // Align items vertically
-          gap: 20px; // Space between the image and the input
+.instruction-class ol {
+  margin-bottom: 20px;
+  padding-left: 2px;
+}
 
-          
-      
-          .icon-box {
-            width: 230px; // Adjust width as needed
-            height: 200px; // Adjust height as needed
-            background-color: #E6E6E6; // Background color
-            border: 1px solid #ccc; // Border around the box
-            border-radius: 10px; // Optional: rounded corners
-            display: flex; // Use flexbox to center the image and content
-            flex-direction: column;
-            align-items: center; // Vertically center the content
-            justify-content: center; // Horizontally center the content
-            padding: 10px; // Padding inside the box
-            box-sizing: border-box; // Include padding and border in width and height
-      
-            img {
-              max-width: 100%; // Ensure the image scales correctly
-              max-height: 100%; // Ensure the image scales correctly
-              object-fit: contain; // Maintain aspect ratio
-              margin-bottom: 10px; // Space between image and label
-            }
-      
-            label {
-              margin-bottom: 5px; // Space between label and input
-              font-size: 14px; // Adjust font size if needed
-            }
-      
-            input[type="file"] {
-              cursor: pointer; // Change cursor to pointer for file input
-            }
-          }
-        }
-      
-        .start-exam-button {
-          display: flex;
-          justify-content: center; // Center the button horizontally
-      
-          button {
-            background-color: green; // Button background color
-            color: white; // Button text color
-            padding: 10px 20px; // Padding inside the button
-            border: none; // Remove border
-            border-radius: 5px; // Rounded corners
-            font-size: 16px; // Adjust font size
-            cursor: pointer; // Pointer cursor on hover
-      
-            &:hover {
-              background-color: darkgreen; // Darker color on hover
-            }
-          }
-        }
-      }
-      
+.instruction-class ol li {
+  margin-bottom: 10px;
+}
+
+.instruction-class h1 {
+  text-align: center;
+  margin-top: 30px; // Adjusted margin for better alignment
+  font-size: 28px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0px;
+}
+
+.upload-box {
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 25px;
+  margin-top: -40px;
+}
+
+.file-upload-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 150px;
+  margin-top: 20px;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.icon-box {
+  width: 230px;
+  height: 200px;
+  background-color: #E6E6E6;
+  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-left: 10px;
+}
+
+.icon-box img {
+  max-width: 100%;
+  max-height: 100px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.document-label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  text-align: left;
+  width: 100%;
+  padding-left: 10px;
+}
+
+.start-exam-button {
+  background-color: #1a1469;
+  color: white;
+  padding: 8px 48px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: -35px;
+  margin-right: 16px;
+}
+
+.start-exam-button:hover {
+  background-color: darkgreen;
+}
+
+.upload-box h1 {
+  text-align: left;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.upload-box .divider {
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  margin-top: 0;
+}
+
+.open-camera-button {
+  margin-top: 10px;
+  background-color: #1a1469;
+  color: white;
+  padding: 8px 48px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  width: auto;
+  max-width: 200px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.open-camera-button:hover {
+  background-color: #0056b3;
+}
+
+.button-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+/* New styles for the exam icon */
+.exam-icon {
+  width: 50px; // Adjust width as needed
+  height: 50px; // Adjust height as needed
+ margin: 10px;
+ margin-top: 20px;
+}
+  
+.exam-header{
+  display: flex;
+  justify-content: center;
 }

@@ -101,7 +101,7 @@ const SideBar = () => {
       setReports(false);
       setSupport(false);
       setAnalyticsReport(true);
-      setTestModule(false);
+      // setTestModule(false);
     } else {
       setIsContent(false);
       setIsUserManagement(false);
@@ -488,21 +488,21 @@ const SideBar = () => {
             <Accordion.Body>
               <div className="accordian-inner-navlists">
                 <ul>
-                  <li>
+                  {/* <li>
                     <NavLink to={"/client/test-modules/TestModule"}>
                       <span>
                         <i className="fa-solid fa-angle-right"></i>
                       </span>
                       Question Bank's 
                     </NavLink>
-                  </li>
+                  </li> */}
                   
                   <li>
                     <NavLink to={"/client/test-modules/UploadDocument"}>
                       <span>
                         <i className="fa-solid fa-angle-right"></i>
                       </span>
-                      Upload Documents
+                      Test Attempt
                     </NavLink>
                   </li>
                  

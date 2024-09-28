@@ -46,7 +46,7 @@ const ManageSector = () => {
     const handleModalShow = (type, data = null) => {
         setModalShow({ ...modalShow, [type]: true });
         if (type === 'editShow') setEditData(data);
-        if (type === 'deleteShow' || type === 'statusShow') setId(data);
+        if (type === 'deleteShow' || type === 'statusShow') setId(data); 
     };
 
     // handleModalClose

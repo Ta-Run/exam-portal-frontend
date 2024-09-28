@@ -1,17 +1,119 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '../../../components/header/admin/Header';
 import './TestModule.scss'; // Assuming the SCSS file is named TestModule.scss
+import axios from 'axios';
+import { toast } from 'react-toastify';
+
+var token = {
+    headers: {
+        'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU' // Replace with your JWT token
+    }
+};
 
 function TestModule() {
-    // State to track the selected option
     const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedQuestion, setSelectedQuestion] = useState(0); // Start with the first question
+    const [questions, setQuestions] = useState([]); // State to store fetched questions
+    const [responses, setResponses] = useState([]); // State to store user responses
+    const [loading, setLoading] = useState(true); // State to handle loading
+    const [userDetail, setUserDetail] = useState([])
 
-    const [selectedQuestion, setSelectedQuestion] = useState(null);
+    // Fetch data from the API when the component mounts
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            try {
+                const data = await axios.get('http://localhost:4000/api/v1/exam/questions-list', token);
+
+                if (data.data.res) {
+                    setQuestions(data.data.data);
+                } else {
+                    console.error('Failed to fetch questions:', data.msg);
+                }
+            } catch (error) {
+                console.error('Error fetching questions:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+
+        const fetchUserDetails = async () => {
+            try {
+                const data = await axios.get('http://localhost:4000/api/v1/exam/get-document/66837b0d27698669a0070631', token);
+
+                if (data.data.data) {
+
+                    setUserDetail(data.data.data);
+                } else {
+                    console.error('Failed to fetch questions:', data.msg);
+                }
+            } catch (error) {
+                console.error('Error fetching questions:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchQuestions();
+        fetchUserDetails();
+    }, []);
+
+    console.log('user', userDetail.yourPhoto)
 
 
     // Handle the radio button change
     const handleOptionChange = (e) => {
         setSelectedOption(e.target.value);
+
+        // Update or add the response to the responses array
+        const updatedResponses = [...responses];
+        const existingResponseIndex = updatedResponses.findIndex(response => response.questionId === questions[selectedQuestion]._id);
+
+        if (existingResponseIndex > -1) {
+            updatedResponses[existingResponseIndex].selectedOption = e.target.value;
+        } else {
+            updatedResponses.push({
+                questionBankId: questions[selectedQuestion].questionBankId,
+                nosId: questions[selectedQuestion].nosId,
+                selectedOption: e.target.value,
+                question: questions[selectedQuestion].question
+            });
+        }
+
+        setResponses(updatedResponses);
+    };
+
+    // Handle question click
+    const handleQuestionClick = (index) => {
+        setSelectedQuestion(index);
+        setSelectedOption(responses.find(response => response.questionId === questions[index]._id)?.selectedOption || null);
+    };
+
+    const handleSubmit = async () => {
+        try {
+
+            console.log('resposne', responses)
+            const response = await axios.post('http://localhost:4000/api/v1/exam/submit-exam', 
+                 {   
+                    questionBankId: "66837b9a27698669a00706e8",
+                    nosId:"66ef249babeea9715b1b9163",
+                    selectedOption: "A",
+                    question:"Mathematics Quiz Bank"
+                }
+                
+            , token);
+
+            console.log('submit paper response', response)
+
+            if (response.data.message) {
+                toast.success('Exam submitted successfully!');
+            } else {
+                alert('Failed to submit exam.');
+            }
+        } catch (error) {
+            console.error('Error submitting exam:', error);
+            alert('An error occurred while submitting your exam.');
+        }
     };
 
     // Conditionally set className or inline style for selected option
@@ -19,19 +121,25 @@ function TestModule() {
         return selectedOption === option ? { backgroundColor: 'blue', color: 'white' } : {};
     };
 
-
-
-
-    // Handle question click
-    const handleQuestionClick = (index) => {
-        setSelectedQuestion(index);
+    // Handle next question
+    const handleNextQuestion = () => {
+        if (selectedQuestion < questions.length - 1) {
+            setSelectedQuestion(selectedQuestion + 1);
+            setSelectedOption(responses.find(response => response.questionId === questions[selectedQuestion + 1]?._id)?.selectedOption || null);
+        }
     };
 
-    // Conditionally set className or inline style for selected question
-    const getQuestionStyle = (index) => {
-        return selectedQuestion === index ? { backgroundColor: 'red', color: 'white' } : {};
+    // Handle previous question
+    const handlePreviousQuestion = () => {
+        if (selectedQuestion > 0) {
+            setSelectedQuestion(selectedQuestion - 1);
+            setSelectedOption(responses.find(response => response.questionId === questions[selectedQuestion - 1]?._id)?.selectedOption || null);
+        }
     };
 
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div>
@@ -40,101 +148,68 @@ function TestModule() {
                 <div className='left-box'>
                     {/* Progress Bar */}
                     <div className='progress-bar-container'>
-                        <p>Question 1/20</p>
+                        <p>Question {selectedQuestion + 1}/{questions.length}</p>
                         <div className='progress-bar'>
-                            <div className='progress-bar-fill' style={{ width: '75%' }}></div>
+                            <div className='progress-bar-fill' style={{ width: `${(selectedQuestion + 1) / questions.length * 100}%` }}></div>
                         </div>
-
                     </div>
 
                     {/* Questions Section */}
-                    <div className='questions-section'>
-                        <p className='question-box'>Question 1: 1.It is a long established fact that a reader will be distracted by the readable content of a page wh
-                            en looking at its layout.?</p>
-                        <div className='question-box' style={getOptionStyle('option1')}>
-                            <input
-                                type='radio'
-                                id='option1'
-                                name='question1'
-                                value='option1'
-                                checked={selectedOption === 'option1'}
-                                onChange={handleOptionChange}
-                            />
-                            <label htmlFor='option1'>Paris</label>
+                    {questions.length > 0 && (
+                        <div className='questions-section'>
+                            <p className='question-box'>{questions[selectedQuestion].question}</p>
+                            {['optionA', 'optionB', 'optionC', 'optionD'].map((optionKey, index) => (
+                                <div className='question-box' key={index} style={getOptionStyle(optionKey)}>
+                                    <input
+                                        type='radio'
+                                        id={optionKey}
+                                        name='question'
+                                        value={optionKey}
+                                        checked={selectedOption === optionKey}
+                                        onChange={handleOptionChange}
+                                    />
+                                    <label htmlFor={optionKey}>{questions[selectedQuestion][optionKey]}</label>
+                                </div>
+                            ))}
                         </div>
-                        <div className='question-box' style={getOptionStyle('option1')}>
-                            <input
-                                type='radio'
-                                id='option1'
-                                name='question1'
-                                value='option1'
-                                checked={selectedOption === 'option1'}
-                                onChange={handleOptionChange}
-                            />
-                            <label htmlFor='option2'>London</label>
-                        </div>
-                        <div className='question-box' style={getOptionStyle('option1')}>
-                            <input
-                                type='radio'
-                                id='option1'
-                                name='question1'
-                                value='option1'
-                                checked={selectedOption === 'option1'}
-                                onChange={handleOptionChange}
-                            />
-                            <label htmlFor='option3'>Berlin</label>
-                        </div>
-                        <div className='question-box' style={getOptionStyle('option1')}>
-                            <input
-                                type='radio'
-                                id='option1'
-                                name='question1'
-                                value='option1'
-                                checked={selectedOption === 'option1'}
-                                onChange={handleOptionChange}
-                            />
-                            <label htmlFor='option4'>Madrid</label>
-                        </div>
-                    </div>
+                    )}
+
                     <div className='button_section'>
                         <button className='review'>Review</button>
-                        <button className='preview'>Preveiw</button>
-                        <button className='next'>Next</button>
+                        <button className='preview' onClick={handlePreviousQuestion} disabled={selectedQuestion === 0}>Previous</button>
+                        <button className='next' onClick={handleNextQuestion} disabled={selectedQuestion === questions.length - 1}>Next</button>
                     </div>
                 </div>
+
                 <div className='right-box'>
-                    {/* Logo Section */}
                     <div className='logo-box'>
                         <img src="/img/testicon/testUser.png" alt="Test" />
-
                     </div>
 
-                    {/* Choose Questions Label */}
                     <span className='choose-questions'>Choose a question</span>
 
-                    {/* Questions Box with 5x4 Grid */}
                     <div className='questions-box'>
-                        {Array.from({ length: 20 }).map((_, index) => (
+                        {questions.map((_, index) => (
                             <div className='question-number' key={index}
-
-                                style={getQuestionStyle(index)}
-                                onClick={() => handleQuestionClick(index)} >
+                                style={selectedQuestion === index ? { backgroundColor: 'red', color: 'white' } : {}}
+                                onClick={() => handleQuestionClick(index)}>
                                 {index + 1}
                             </div>
                         ))}
                     </div>
 
-                    {/* Submit Button */}
                     <div className='submit-box'>
-                        <button className='submit-btn'>Submit</button>
+                        <button className='submit-btn' onClick={handleSubmit}>Submit</button>
                     </div>
 
-                    {/* Image Section */}
                     <div className='image-box'>
-                        <img src="/img/testicon/Mask_group.png" alt="Test" />
+                        <img
+                            src={userDetail && userDetail.yourPhoto ? userDetail.yourPhoto : "/img/testicon/Mask_group.png"}
+                            alt="User"
+                        />
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     );
