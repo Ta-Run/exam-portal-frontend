@@ -134,7 +134,9 @@ export const apiendpoints = {
 
     
     //? ***************** Test Module *****************
-     uploadTestDocument : ""
+    getTestModuleQuestion : "/question/66837b9a27698669a00706e8",
+    uploadTestDocument : "",
+    getExamUserDetail:"exam/get-document/:id"
 }
 
 export const messages = {

@@ -11,20 +11,30 @@ const UploadDocument = () => {
     const [candidatePhoto, setCandidatePhoto] = useState(null);
     const [candidateDocument, setCandidateDocument] = useState(null);
     const [error, setError] = useState('');
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
+    const id = "66837b0d27698669a0070631";
 
     const handleFileChange = (event) => {
         const { id, files } = event.target;
         if (files.length > 0) {
-            if (id === 'candidate-photo') {
-                setCandidatePhoto(files[0]);
-            } else if (id === 'candidate-document') {
-                setCandidateDocument(files[0]);
+            const file = files[0];
+            // Check the file type
+            const allowedTypes = ['image/jpeg', 'image/png'];
+            
+            if (!allowedTypes.includes(file.type)) {
+                setError('Only JPG and PNG files are allowed.');
+                return;
             }
-            setError(''); // Clear error message if file is selected
+    
+            if (id === 'candidate-photo') {
+                setCandidatePhoto(file);
+            } else if (id === 'candidate-document') {
+                setCandidateDocument(file);
+            }
+            setError(''); // Clear error message if file is valid
         }
     };
-
+    
     // const handleSubmit = async (event) => {
     //     event.preventDefault();
     //     setError(''); // Reset any previous errors
@@ -65,58 +75,58 @@ const UploadDocument = () => {
 
 
     const handleSubmit = async (event) => {
-      event.preventDefault();
-      setError('');
-  
-      const formData = new FormData();
-      if (candidatePhoto) {
-          formData.append('yourPhoto', candidatePhoto);
-      }
-      if (candidateDocument) {
-          formData.append('yourDocument', candidateDocument);
-      }
+        event.preventDefault();
+        setError('');
 
-         // Append the access code to the FormData
+        const formData = new FormData();
+        if (candidatePhoto) {
+            formData.append('yourPhoto', candidatePhoto);
+        }
+        if (candidateDocument) {
+            formData.append('yourDocument', candidateDocument);
+        }
+
+        // Append the access code to the FormData
         formData.append('accessCode', 1234);
-  
-      try {
-          const response = await fetch('http://localhost:4000/api/v1/application/upload', {
-              method: 'POST',
-              headers: {
-                  'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
-              },
-              body: formData,
-          });
 
-          console.log('response',response)
-  
-          const textResponse = await response.text(); // Read the response as 
-  
-          if (response.ok) {
-              const result = JSON.parse(textResponse);
-              if(result.res){
-                toast.success('Document Uploaded Successfully')
-                navigate('/client/test-modules/TestModule');
-              }else{
-                toast.error('Please Upload Document Properply')
-              }
-              // Parse JSON only if the response is OK
-              // Step 3: Navigate to the TestModule route after successful upload
-              
-              console.log('Upload successful', result);
-          } else {
-              console.error('Upload failed:', textResponse);
-              setError('Upload failed: ' + (textResponse || response.statusText));
-          }
-      } catch (error) {
-          console.error('Error:', error);
-          setError('An error occurred: ' + error.message);
-      }
-  };
-  
+        try {
+            const response = await fetch('http://localhost:4000/api/v1/application/upload', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
+                },
+                body: formData,
+            });
+
+            console.log('response', response)
+
+            const textResponse = await response.text(); // Read the response as 
+
+            if (response.ok) {
+                const result = JSON.parse(textResponse);
+                if (result.res) {
+                    toast.success('Document Uploaded Successfully')
+                    navigate(`/client/test-modules/TestModule/${id}`);
+                } else {
+                    toast.error('Please Upload Document Properply')
+                }
+                // Parse JSON only if the response is OK
+                // Step 3: Navigate to the TestModule route after successful upload
+
+                console.log('Upload successful', result);
+            } else {
+                console.error('Upload failed:', textResponse);
+                setError('Upload failed: ' + (textResponse || response.statusText));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setError('An error occurred: ' + error.message);
+        }
+    };
+
     const openCamera = (type) => {
         console.log(`Open camera for: ${type}`);
-        // Implement camera functionality if needed
+
     };
 
     return (

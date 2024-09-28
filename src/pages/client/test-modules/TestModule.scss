@@ -67,7 +67,7 @@
                 display: flex;
                 align-items: center;
                 border: 1px solid #ccc;
-                border-radius: 5px;
+                border-radius: 8px;
                 padding: 10px;
                 background-color: #fff;
                 position: relative;
@@ -254,6 +254,7 @@
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         /* 5 columns */
+        padding: 10px 15px;
         gap: 10px;
         width: auto;
         height: auto;

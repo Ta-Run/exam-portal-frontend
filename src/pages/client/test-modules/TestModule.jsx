@@ -3,6 +3,9 @@ import Header from '../../../components/header/admin/Header';
 import './TestModule.scss'; // Assuming the SCSS file is named TestModule.scss
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { reqToGetQuestionsModule } from '../../../reduxToolkit/services/testModuleService';
 
 var token = {
     headers: {
@@ -18,14 +21,19 @@ function TestModule() {
     const [loading, setLoading] = useState(true); // State to handle loading
     const [userDetail, setUserDetail] = useState([])
 
+
+    let { id } = useParams();
+    const dispatch = useDispatch();
+
     // Fetch data from the API when the component mounts
     useEffect(() => {
+
         const fetchQuestions = async () => {
             try {
-                const data = await axios.get('http://localhost:4000/api/v1/exam/questions-list', token);
+                const reduxApi = await dispatch(reqToGetQuestionsModule());
 
-                if (data.data.res) {
-                    setQuestions(data.data.data);
+                if (reduxApi.payload.data) {
+                    setQuestions(reduxApi.payload.data);
                 } else {
                     console.error('Failed to fetch questions:', data.msg);
                 }
@@ -39,10 +47,9 @@ function TestModule() {
 
         const fetchUserDetails = async () => {
             try {
-                const data = await axios.get('http://localhost:4000/api/v1/exam/get-document/66837b0d27698669a0070631', token);
+                const data = await axios.get(`http://localhost:4000/api/v1/exam/get-document/${id}`, token);
 
                 if (data.data.data) {
-
                     setUserDetail(data.data.data);
                 } else {
                     console.error('Failed to fetch questions:', data.msg);
@@ -57,9 +64,6 @@ function TestModule() {
         fetchQuestions();
         fetchUserDetails();
     }, []);
-
-    console.log('user', userDetail.yourPhoto)
-
 
     // Handle the radio button change
     const handleOptionChange = (e) => {
@@ -91,20 +95,14 @@ function TestModule() {
 
     const handleSubmit = async () => {
         try {
-
-            console.log('resposne', responses)
-            const response = await axios.post('http://localhost:4000/api/v1/exam/submit-exam', 
-                 {   
+            const response = await axios.post('http://localhost:4000/api/v1/exam/submit-exam',
+                {
                     questionBankId: "66837b9a27698669a00706e8",
-                    nosId:"66ef249babeea9715b1b9163",
+                    nosId: "66ef249babeea9715b1b9163",
                     selectedOption: "A",
-                    question:"Mathematics Quiz Bank"
+                    question: "Mathematics Quiz Bank"
                 }
-                
-            , token);
-
-            console.log('submit paper response', response)
-
+                , token);
             if (response.data.message) {
                 toast.success('Exam submitted successfully!');
             } else {
@@ -118,7 +116,15 @@ function TestModule() {
 
     // Conditionally set className or inline style for selected option
     const getOptionStyle = (option) => {
-        return selectedOption === option ? { backgroundColor: 'blue', color: 'white' } : {};
+        return selectedOption === option ? {
+            background: 'linear-gradient(180deg, #15BB30 -25%, #1FB036 51.86%, #00A65A 122%)',
+            color: 'white',
+            position: 'relative',
+            paddingLeft: '30px', // Provide space for the checkmark
+            borderRadius: '5px', // Add border radius if needed
+            border: '1px solid #00A65A', // Add border to match style
+            transition: 'background 0.3s ease',
+        } : {};
     };
 
     // Handle next question
@@ -204,10 +210,14 @@ function TestModule() {
 
                     <div className='image-box'>
                         <img
-                            src={userDetail && userDetail.yourPhoto ? userDetail.yourPhoto : "/img/testicon/Mask_group.png"}
+                            src={userDetail && userDetail.yourPhoto
+                                ? `http://localhost:4000${userDetail.yourPhoto}`
+                                : "/img/testicon/Mask_group.png"}
                             alt="User"
+                            height={200}
                         />
                     </div>
+
 
                 </div>
             </div>

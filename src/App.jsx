@@ -128,7 +128,7 @@ const App = () => {
           <Route path="/client/batchs-analytics" element={<BatchsAnalytics />} />
           <Route path="/client/job-roles-analytics" element={<JobRolesAnalytics />} />
            {/* Test Module */}
-           <Route path="/client/test-modules/TestModule" element={<TestModule />} />
+           <Route path="/client/test-modules/TestModule/:id" element={<TestModule />} />
 {/* Test Module */}
  <Route path="/client/test-modules/UploadDocument" element={<UploadDocument />} />
 

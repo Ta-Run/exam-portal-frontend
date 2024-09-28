@@ -13,6 +13,8 @@ import assessmentReducer from "./slice/assessmentSlice";
 import spocPersonAuthReducer from "./slice/spocPersonAuthSlice";
 // Child user Imports
 import childUserAuthReducer from "./slice/childUserAuthSlice";
+//test reducer import 
+import testMouleReducer from './slice/testModuleSlice';
 
 const getConfig = (key, whitelist) => {
     const persistConfig = {
@@ -35,6 +37,8 @@ const reducer = combineReducers({
     spocPerson: persistReducer(getConfig("spocPerson", ["spocPerson"]), spocPersonAuthReducer),
     // Child User
     childUser: persistReducer(getConfig("childUser", ["childUser"]), childUserAuthReducer),
+    // Test Attempt
+    childUser: persistReducer(getConfig("childUser", ["childUser"]), testMouleReducer)
 })
 
 const store = configureStore({
