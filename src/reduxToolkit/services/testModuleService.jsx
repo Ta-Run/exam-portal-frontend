@@ -26,7 +26,7 @@ export const reqToGetQuestionsModule = createAsyncThunk("reqToGetQuestionsModule
 export const reqToFetchExamUserDetails = createAsyncThunk("reqToFetchExamUserDetails", async (data) => {
 
     try {
-        const response = await Axios.get(`${apiendpoints.getExamUserDetaildeleteClientManageBatch.replace(":id", id)}`, authCommonHeader());
+        const response = await Axios.get(`${apiendpoints.getExamUserDetail.replace(":id", id)}`, authCommonHeader());
 
         if (response.data.res) {
             return response.data;
@@ -37,4 +37,24 @@ export const reqToFetchExamUserDetails = createAsyncThunk("reqToFetchExamUserDet
         console.log(error);
     }
 })
+
+//get exam details of client by cliend id 
+export const reqToFetchClientExamDetails = createAsyncThunk("reqToFetchClientExamDetails", async (data) => {
+
+    try {
+        const response = await Axios.get(`${apiendpoints.getExamClientDeatails}`, authCommonHeader());
+
+        if (response.data.res) {
+            return response.data;
+        } else {
+            toast.error(response.data.msg);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+
+
+
 

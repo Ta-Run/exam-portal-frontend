@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../../components/header/admin/Header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
@@ -6,13 +6,42 @@ import './UploadDocument.scss';
 import examIcon from '../../../images/9e88f01c1b9d24ff5fff2b4111ac7bb5.png';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const UploadDocument = () => {
     const [candidatePhoto, setCandidatePhoto] = useState(null);
     const [candidateDocument, setCandidateDocument] = useState(null);
     const [error, setError] = useState('');
+    const [clientDetail,setClientDetail ] = useState([])
     const navigate = useNavigate();
-    const id = "66837b0d27698669a0070631";
+    const id = 
+    
+    clientDetail._id;
+
+
+    useEffect(()=>{
+        
+         getClientExamDetails()
+    },[])
+    
+    const getClientExamDetails = async () => {
+        try {
+            const data = await axios.get('http://localhost:4000/api/v1/exam/clietnDetail', {
+                headers: {
+                    'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
+                },
+            });
+    
+            if(data.data.status = 200){
+                setClientDetail(data.data.data[0])
+            }
+            
+        } catch (err) {
+            console.error('Error:', err);
+            setError('An error occurred: ' + err.message);
+        }
+    }
+    
 
     const handleFileChange = (event) => {
         const { id, files } = event.target;
@@ -98,7 +127,6 @@ const UploadDocument = () => {
                 body: formData,
             });
 
-            console.log('response', response)
 
             const textResponse = await response.text(); // Read the response as 
 
@@ -123,11 +151,14 @@ const UploadDocument = () => {
             setError('An error occurred: ' + error.message);
         }
     };
-
+   
+     
     const openCamera = (type) => {
         console.log(`Open camera for: ${type}`);
 
     };
+
+console.log(clientDetail.jobRoleName)
 
     return (
         <div>
@@ -135,7 +166,7 @@ const UploadDocument = () => {
             <div className="upload-docs-class">
                 <div className="instruction-class">
                     <div className="header-row">
-                        <div className="sub-name">Diamond Planning_Eng</div>
+                        <div className="sub-name">{clientDetail.jobRoleName}</div>
                         <div className="time-duration">Time Allowed: 60 min</div>
                     </div>
 

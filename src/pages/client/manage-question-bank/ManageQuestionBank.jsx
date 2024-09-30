@@ -19,8 +19,9 @@ const ManageQuestionBank = () => {
 
     const dispatch = useDispatch();
 
-    // Selectors
+    // Selectors 
     const { clientQuestionBank, clientQuestionBankPagination, sectorDropDown, clientJobRoleDropDown, loader } = useSelector((state) => state.contentManagement);
+
 
     // States
     const [modalShow, setModalShow] = useState({

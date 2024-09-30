@@ -22,6 +22,7 @@ function TestModule() {
     const [userDetail, setUserDetail] = useState([])
 
 
+
     let { id } = useParams();
     const dispatch = useDispatch();
 
@@ -47,7 +48,7 @@ function TestModule() {
 
         const fetchUserDetails = async () => {
             try {
-                const data = await axios.get(`http://localhost:4000/api/v1/exam/get-document/${id}`, token);
+                const data = await axios.get(`http://localhost:4000/api/v1/exam/get-document/66837b0d27698669a0070631`, token);
 
                 if (data.data.data) {
                     setUserDetail(data.data.data);
@@ -68,10 +69,10 @@ function TestModule() {
     // Handle the radio button change
     const handleOptionChange = (e) => {
         setSelectedOption(e.target.value);
+        setSelectedOption(e.target.value);
 
-        // Update or add the response to the responses array
         const updatedResponses = [...responses];
-        const existingResponseIndex = updatedResponses.findIndex(response => response.questionId === questions[selectedQuestion]._id);
+        const existingResponseIndex = updatedResponses.findIndex(response => response.questionBankId === questions[selectedQuestion].questionBankId);
 
         if (existingResponseIndex > -1) {
             updatedResponses[existingResponseIndex].selectedOption = e.target.value;
@@ -80,7 +81,8 @@ function TestModule() {
                 questionBankId: questions[selectedQuestion].questionBankId,
                 nosId: questions[selectedQuestion].nosId,
                 selectedOption: e.target.value,
-                question: questions[selectedQuestion].question
+                question: questions[selectedQuestion].question,
+                questionId: questions[selectedQuestion]._id // Ensure you're capturing the question ID
             });
         }
 
@@ -97,16 +99,20 @@ function TestModule() {
         try {
             const response = await axios.post('http://localhost:4000/api/v1/exam/submit-exam',
                 {
-                    questionBankId: "66837b9a27698669a00706e8",
-                    nosId: "66ef249babeea9715b1b9163",
-                    selectedOption: "A",
-                    question: "Mathematics Quiz Bank"
+                    responses: responses // Send all user responses
                 }
                 , token);
             if (response.data.message) {
                 toast.success('Exam submitted successfully!');
             } else {
                 alert('Failed to submit exam.');
+            }
+            if (response.data.message) {
+                toast.success('Exam submitted successfully!');
+                // Optionally reset states here
+                setSelectedOption(null);
+                setResponses([]);
+                setSelectedQuestion(0);
             }
         } catch (error) {
             console.error('Error submitting exam:', error);
