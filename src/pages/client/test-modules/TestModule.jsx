@@ -3,57 +3,34 @@ import Header from '../../../components/header/admin/Header';
 import './TestModule.scss'; // Assuming the SCSS file is named TestModule.scss
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from "react-redux";
-import { reqToGetQuestionsModule } from '../../../reduxToolkit/services/testModuleService';
+import { useParams, useLocation } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { reqToGetQuestionsModule, reqToSubmitAnswer, reqToFetchCandidateDocumentDetails } from '../../../reduxToolkit/services/testModuleService';
 
-var token = {
-    headers: {
-        'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU' // Replace with your JWT token
-    }
-};
 
 function TestModule() {
     const [selectedOption, setSelectedOption] = useState(null);
-    const [selectedQuestion, setSelectedQuestion] = useState(0); // Start with the first question
-    const [questions, setQuestions] = useState([]); // State to store fetched questions
-    const [responses, setResponses] = useState([]); // State to store user responses
-    const [loading, setLoading] = useState(true); // State to handle loading
-    const [userDetail, setUserDetail] = useState([])
-
-
+    const [selectedQuestion, setSelectedQuestion] = useState(0);
+    const [questions, setQuestions] = useState([]);
+    const [responses, setResponses] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [imageUrl, setImageUrl] = useState([])
 
     let { id } = useParams();
     const dispatch = useDispatch();
+    const location = useLocation();
+    const clientId = location.state || {};
+    console.log(clientId)
 
-    // Fetch data from the API when the component mounts
+
     useEffect(() => {
-
         const fetchQuestions = async () => {
             try {
-                const reduxApi = await dispatch(reqToGetQuestionsModule());
-
+                const reduxApi = await dispatch(reqToGetQuestionsModule(id));
                 if (reduxApi.payload.data) {
                     setQuestions(reduxApi.payload.data);
                 } else {
-                    console.error('Failed to fetch questions:', data.msg);
-                }
-            } catch (error) {
-                console.error('Error fetching questions:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-
-        const fetchUserDetails = async () => {
-            try {
-                const data = await axios.get(`http://localhost:4000/api/v1/exam/get-document/66837b0d27698669a0070631`, token);
-
-                if (data.data.data) {
-                    setUserDetail(data.data.data);
-                } else {
-                    console.error('Failed to fetch questions:', data.msg);
+                    console.error('Failed to fetch questions:',);
                 }
             } catch (error) {
                 console.error('Error fetching questions:', error);
@@ -63,31 +40,73 @@ function TestModule() {
         };
 
         fetchQuestions();
-        fetchUserDetails();
+        fetchUserImages()
+        
     }, []);
+ console.log(imageUrl)
+
+    //fetch user profile 
+    // Function to fetch user details based on client ID
+    const fetchUserImages = async () => {
+        try {
+            setLoading(true);
+            const data = await dispatch(reqToFetchCandidateDocumentDetails(clientId));
+            
+
+            if (data.payload.data) {
+                const userData = data.payload.data;
+         
+
+                if (userData && userData.yourPhoto) {
+                    setImageUrl(userData.yourPhoto); // Set the preview URL
+                }
+            } else {
+                console.error('Failed to fetch user details:', data.msg);
+            }
+        } catch (error) {
+            console.error('Error fetching user details:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Handle the radio button change
-    const handleOptionChange = (e) => {
-        setSelectedOption(e.target.value);
-        setSelectedOption(e.target.value);
+    // Handle the radio button change
+const handleOptionChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedOption(selectedValue);
 
-        const updatedResponses = [...responses];
-        const existingResponseIndex = updatedResponses.findIndex(response => response.questionBankId === questions[selectedQuestion].questionBankId);
+    const currentQuestion = questions[selectedQuestion];
+    
+    // Check if the response for the current question already exists
+    const existingResponseIndex = responses.findIndex(
+        (response) => response.questionId === currentQuestion._id
+    );
 
-        if (existingResponseIndex > -1) {
-            updatedResponses[existingResponseIndex].selectedOption = e.target.value;
-        } else {
-            updatedResponses.push({
-                questionBankId: questions[selectedQuestion].questionBankId,
-                nosId: questions[selectedQuestion].nosId,
-                selectedOption: e.target.value,
-                question: questions[selectedQuestion].question,
-                questionId: questions[selectedQuestion]._id // Ensure you're capturing the question ID
-            });
-        }
-
-        setResponses(updatedResponses);
+    // Create a new response object
+    const newResponse = {
+        questionBankId: currentQuestion.questionBankId,
+        nosId: currentQuestion.nosId,
+        selectedOption: selectedValue,
+        question: currentQuestion.question,
+        questionId: currentQuestion._id
     };
+
+    let updatedResponses;
+
+    if (existingResponseIndex > -1) {
+        // Update the existing response
+        updatedResponses = [...responses];
+        updatedResponses[existingResponseIndex] = newResponse;
+    } else {
+        // Add the new response
+        updatedResponses = [...responses, newResponse];
+    }
+
+    // Update the responses state
+    setResponses(updatedResponses);
+};
+
 
     // Handle question click
     const handleQuestionClick = (index) => {
@@ -97,18 +116,12 @@ function TestModule() {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://localhost:4000/api/v1/exam/submit-exam',
-                {
-                    responses: responses // Send all user responses
-                }
-                , token);
-            if (response.data.message) {
+            console.log('payload', responses); // This should now log all answers
+            const reduxResponse = await dispatch(reqToSubmitAnswer(responses));
+                    
+            if (reduxResponse.payload) {
                 toast.success('Exam submitted successfully!');
-            } else {
-                alert('Failed to submit exam.');
-            }
-            if (response.data.message) {
-                toast.success('Exam submitted successfully!');
+    
                 // Optionally reset states here
                 setSelectedOption(null);
                 setResponses([]);
@@ -116,9 +129,10 @@ function TestModule() {
             }
         } catch (error) {
             console.error('Error submitting exam:', error);
-            alert('An error occurred while submitting your exam.');
         }
     };
+    
+
 
     // Conditionally set className or inline style for selected option
     const getOptionStyle = (option) => {
@@ -215,16 +229,14 @@ function TestModule() {
                     </div>
 
                     <div className='image-box'>
-                        <img
-                            src={userDetail && userDetail.yourPhoto
-                                ? `http://localhost:4000${userDetail.yourPhoto}`
+                    <img
+                            src={imageUrl&& imageUrl
+                                ? `http://localhost:4000${imageUrl}`
                                 : "/img/testicon/Mask_group.png"}
                             alt="User"
                             height={200}
-                        />
+                        /> 
                     </div>
-
-
                 </div>
             </div>
         </div>

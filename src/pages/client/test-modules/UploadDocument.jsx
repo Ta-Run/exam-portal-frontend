@@ -7,23 +7,27 @@ import examIcon from '../../../images/9e88f01c1b9d24ff5fff2b4111ac7bb5.png';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useDispatch } from "react-redux";
+import { reqToFetchCandidateDocumentDetails } from '../../../reduxToolkit/services/testModuleService';
 
 const UploadDocument = () => {
     const [candidatePhoto, setCandidatePhoto] = useState(null);
+    const [previewPhotoUrl, setPreviewPhotoUrl] = useState([]);
+    const [previewDocumentUrl, setPreviewDocumentUrl] = useState([])
+
     const [candidateDocument, setCandidateDocument] = useState(null);
     const [error, setError] = useState('');
-    const [clientDetail,setClientDetail ] = useState([])
+    const [clientDetail, setClientDetail] = useState([])
+   
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    const id = 
-    
-    clientDetail._id;
+    const id = clientDetail._id;
+    const dispatch = useDispatch();
 
+    useEffect(() => {
+        getClientExamDetails()
+    }, [])
 
-    useEffect(()=>{
-        
-         getClientExamDetails()
-    },[])
-    
     const getClientExamDetails = async () => {
         try {
             const data = await axios.get('http://localhost:4000/api/v1/exam/clietnDetail', {
@@ -31,77 +35,35 @@ const UploadDocument = () => {
                     'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
                 },
             });
-    
-            if(data.data.status = 200){
+
+            if (data.data.status = 200) {
                 setClientDetail(data.data.data[0])
             }
-            
+
         } catch (err) {
             console.error('Error:', err);
             setError('An error occurred: ' + err.message);
         }
     }
-    
+
 
     const handleFileChange = (event) => {
-        const { id, files } = event.target;
-        if (files.length > 0) {
-            const file = files[0];
-            // Check the file type
-            const allowedTypes = ['image/jpeg', 'image/png'];
-            
-            if (!allowedTypes.includes(file.type)) {
-                setError('Only JPG and PNG files are allowed.');
-                return;
-            }
-    
-            if (id === 'candidate-photo') {
+        const file = event.target.files[0];
+
+        if (file) {
+            // Display image preview for Candidate Photo
+            if (event.target.id === 'candidate-photo') {
                 setCandidatePhoto(file);
-            } else if (id === 'candidate-document') {
-                setCandidateDocument(file);
+                setPreviewPhotoUrl(URL.createObjectURL(file));
             }
-            setError(''); // Clear error message if file is valid
+            // Display image preview for Candidate Document
+            else if (event.target.id === 'candidate-document') {
+                setCandidateDocument(file);
+                setPreviewDocumentUrl(URL.createObjectURL(file));
+            }
         }
     };
     
-    // const handleSubmit = async (event) => {
-    //     event.preventDefault();
-    //     setError(''); // Reset any previous errors
-
-    //     const formData = new FormData();
-    //     if (candidatePhoto) {
-    //         formData.append('candidatePhoto', candidatePhoto);
-    //     }
-    //     if (candidateDocument) {
-    //         formData.append('candidateDocument', candidateDocument);
-    //     }
-
-    //     try {
-    //         const response = await fetch('{{examportal}}/application/upload', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Authorization': 'Bearer ' + 'your-jwt-token' // Replace with your actual JWT token
-    //             },
-    //             body: formData,
-    //         });
-
-    //         if (response.ok) {
-    //             const result = await response.json();
-    //             console.log('Upload successful', result);
-    //             // Optionally clear files after successful upload
-    //             setCandidatePhoto(null);
-    //             setCandidateDocument(null);
-    //         } else {
-    //             const errorData = await response.json();
-    //             console.error('Upload failed', errorData);
-    //             setError('Upload failed: ' + (errorData.message || response.statusText));
-    //         }
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //         setError('An error occurred: ' + error.message);
-    //     }
-    // };
-
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -115,7 +77,6 @@ const UploadDocument = () => {
             formData.append('yourDocument', candidateDocument);
         }
 
-        // Append the access code to the FormData
         formData.append('accessCode', 1234);
 
         try {
@@ -134,14 +95,11 @@ const UploadDocument = () => {
                 const result = JSON.parse(textResponse);
                 if (result.res) {
                     toast.success('Document Uploaded Successfully')
-                    navigate(`/client/test-modules/TestModule/${id}`);
+                    // fetchUserImages();
+                    navigate(`/client/test-modules/TestModule/${id}`, { state: clientDetail.clientId });
                 } else {
                     toast.error('Please Upload Document Properply')
                 }
-                // Parse JSON only if the response is OK
-                // Step 3: Navigate to the TestModule route after successful upload
-
-                console.log('Upload successful', result);
             } else {
                 console.error('Upload failed:', textResponse);
                 setError('Upload failed: ' + (textResponse || response.statusText));
@@ -151,14 +109,12 @@ const UploadDocument = () => {
             setError('An error occurred: ' + error.message);
         }
     };
-   
-     
+
+
     const openCamera = (type) => {
         console.log(`Open camera for: ${type}`);
 
     };
-
-console.log(clientDetail.jobRoleName)
 
     return (
         <div>
@@ -191,19 +147,23 @@ console.log(clientDetail.jobRoleName)
                     <div className="divider"></div>
                     <form onSubmit={handleSubmit}>
                         <div className="file-upload-row">
+                            {/* Candidate Photo */}
                             <div className="icon-container">
                                 <label htmlFor="candidate-photo" className="document-label">Candidate Photo</label>
-                                <div className="icon-box">
-                                    <img src="/img/testicon/8666687_upload_cloud_icon 1.png" alt="Upload Icon" />
+                                <div className="icon-box" onClick={() => document.getElementById('candidate-photo').click()} style={{ cursor: 'pointer' }}>
+                                    {/* Display selected image or fallback to the upload icon */}
+                                    {previewPhotoUrl ? (
+                                        <img src={previewPhotoUrl} alt="Candidate Photo Preview" style={{ width: '100px', height: '100px' }} />
+                                    ) : (
+                                        <img src="/img/testicon/8666687_upload_cloud_icon 1.png" alt="Upload Icon" />
+                                    )}
                                     <input
                                         type="file"
                                         id="candidate-photo"
                                         onChange={handleFileChange}
                                         style={{ display: 'none' }}
                                     />
-                                    <button type="button" onClick={() => document.getElementById('candidate-photo').click()}>
-                                        Select Photo
-                                    </button>
+
                                 </div>
                                 <button type="button" className="open-camera-button" onClick={() => openCamera('Candidate Photo')}>
                                     <FontAwesomeIcon icon={faCamera} style={{ marginRight: '5px' }} />
@@ -211,19 +171,25 @@ console.log(clientDetail.jobRoleName)
                                 </button>
                             </div>
 
+                            {/* Candidate Document */}
                             <div className="icon-container">
                                 <label htmlFor="candidate-document" className="document-label">Candidate Document</label>
-                                <div className="icon-box">
-                                    <img src="/img/testicon/8666687_upload_cloud_icon 1.png" alt="Upload Icon" />
+                                <div className="icon-box"
+
+                                    onClick={() => document.getElementById('candidate-document').click()} style={{ cursor: 'pointer' }}>
+
+                                    {'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg' ? (
+                                        <img src={previewDocumentUrl} alt="Candidate Document Preview" style={{ width: '100px', height: '100px' }} />
+                                    ) : (
+                                        <img src="/img/testicon/8666687_upload_cloud_icon 1.png" alt="Upload Icon" />
+                                    )}
                                     <input
                                         type="file"
                                         id="candidate-document"
                                         onChange={handleFileChange}
                                         style={{ display: 'none' }}
                                     />
-                                    <button type="button" onClick={() => document.getElementById('candidate-document').click()}>
-                                        Select Document
-                                    </button>
+
                                 </div>
                             </div>
                         </div>
@@ -234,6 +200,7 @@ console.log(clientDetail.jobRoleName)
                             <button type="submit" className="start-exam-button">Start Exam</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>

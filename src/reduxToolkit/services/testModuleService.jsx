@@ -8,10 +8,11 @@ import { apiendpoints, messages } from "../../constants";
 //? ********** Test Module **********
 
 // reqToGetQuestionsModule
-export const reqToGetQuestionsModule = createAsyncThunk("reqToGetQuestionsModule", async (data) => {
+export const reqToGetQuestionsModule = createAsyncThunk("reqToGetQuestionsModule", async (id) => {
 
     try {
-        const response = await Axios.get(`${apiendpoints.getTestModuleQuestion}`, authCommonHeader());
+
+        const response = await Axios.get(`${apiendpoints.getTestModuleQuestion.replace(":id", id)}`, authCommonHeader());
 
         if (response.data.res) {
             return response.data;
@@ -23,12 +24,12 @@ export const reqToGetQuestionsModule = createAsyncThunk("reqToGetQuestionsModule
     }
 })
 
-export const reqToFetchExamUserDetails = createAsyncThunk("reqToFetchExamUserDetails", async (data) => {
+export const reqToFetchCandidateDocumentDetails = createAsyncThunk("reqToFetchCandidateDocumentDetails", async (id) => {
 
     try {
-        const response = await Axios.get(`${apiendpoints.getExamUserDetail.replace(":id", id)}`, authCommonHeader());
-
-        if (response.data.res) {
+        const response = await Axios.get(`${apiendpoints.getCondidateDocument.replace(":id", id)}`, authCommonHeader());
+         console.log(response)
+        if (response.data) {
             return response.data;
         } else {
             toast.error(response.data.msg);
@@ -53,6 +54,25 @@ export const reqToFetchClientExamDetails = createAsyncThunk("reqToFetchClientExa
         console.log(error);
     }
 })
+
+
+//get exam details of client by cliend id 
+export const reqToSubmitAnswer = createAsyncThunk("reqToSubmitAnswer", async (data) => {
+
+    try {
+        const response = await Axios.post(apiendpoints.addClientCandidate, data, authCommonHeader());
+
+             console.log('response',response)
+        if (response.data.res) {
+            return response.data;
+        } else {
+            toast.error(response.data.msg);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 
 
 

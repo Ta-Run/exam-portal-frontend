@@ -134,10 +134,10 @@ export const apiendpoints = {
 
     
     //? ***************** Test Module *****************
-    getTestModuleQuestion : "/question/66837b9a27698669a00706e8",
-    uploadTestDocument : "",
-    getExamUserDetail:"exam/get-document/:id",
-    getExamClientDeatails :"/exam/clietnDetail"
+    getTestModuleQuestion : "/question/:id",
+    getCondidateDocument:"/exam/get-document/:id",
+    getExamClientDeatails :"/exam/clietnDetail",
+    submitExamAnswer :"/exam/submit-exam"
 }
 
 export const messages = {

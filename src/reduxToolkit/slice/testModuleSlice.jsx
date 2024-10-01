@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {reqToGetQuestionsModule } from "../services/testModuleService";
-import { reqToFetchExamUserDetails } from "../services/testModuleService";
+
+import { reqToFetchCandidateDocumentDetails ,reqToSubmitAnswer,reqToGetQuestionsModule} from "../services/testModuleService";
+
 const initialState = {
     loader: false,
-    spocPerson: null,
+    spocPerson: [],
     error: ""
 }
 
@@ -26,14 +27,29 @@ const testModuleSlice = createSlice({
         })
        
          //reqToFetchExamUserDetails
-         builder.addCase(reqToFetchExamUserDetails.pending, (state) => {
+         builder.addCase(reqToFetchCandidateDocumentDetails.pending, (state) => {
             state.loader = true;
         })
-        builder.addCase(reqToFetchExamUserDetails.fulfilled, (state, action) => {
+        builder.addCase(reqToFetchCandidateDocumentDetails.fulfilled, (state, action) => {
             state.loader = false;
             state.spocPerson = action.payload.data;
         })
-        builder.addCase(reqToFetchExamUserDetails.rejected, (state, action) => {
+        builder.addCase(reqToFetchCandidateDocumentDetails.rejected, (state, action) => {
+            state.loader = false;
+            state.error = action.payload;
+        })
+
+        //req to submit exam answer 
+         //reqToFetchExamUserDetails
+         builder.addCase(reqToSubmitAnswer.pending, (state) => {
+            state.loader = true;
+        })
+        builder.addCase(reqToSubmitAnswer.fulfilled, (state, action) => {
+            console.log('actionss',action)
+            state.loader = false;
+            state.spocPerson = action.payload;
+        })
+        builder.addCase(reqToSubmitAnswer.rejected, (state, action) => {
             state.loader = false;
             state.error = action.payload;
         })
