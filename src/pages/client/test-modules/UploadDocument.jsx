@@ -18,7 +18,7 @@ const UploadDocument = () => {
     const [candidateDocument, setCandidateDocument] = useState(null);
     const [error, setError] = useState('');
     const [clientDetail, setClientDetail] = useState([])
-   
+
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const id = clientDetail._id;
@@ -63,7 +63,7 @@ const UploadDocument = () => {
             }
         }
     };
-    
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -78,13 +78,15 @@ const UploadDocument = () => {
         }
 
         formData.append('accessCode', 1234);
+                
+        const token = localStorage.getItem("persist:client");
+        const parsedData = JSON.parse(token);
+        const userToken = parsedData && parsedData.client ? JSON.parse(parsedData.client)?.authentication?.accessToken : null;
 
         try {
             const response = await fetch('http://localhost:4000/api/v1/application/upload', {
                 method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
-                },
+                userToken,
                 body: formData,
             });
 
@@ -115,6 +117,8 @@ const UploadDocument = () => {
         console.log(`Open camera for: ${type}`);
 
     };
+
+    console.log(previewPhotoUrl )
 
     return (
         <div>
@@ -152,8 +156,8 @@ const UploadDocument = () => {
                                 <label htmlFor="candidate-photo" className="document-label">Candidate Photo</label>
                                 <div className="icon-box" onClick={() => document.getElementById('candidate-photo').click()} style={{ cursor: 'pointer' }}>
                                     {/* Display selected image or fallback to the upload icon */}
-                                    {previewPhotoUrl ? (
-                                        <img src={previewPhotoUrl} alt="Candidate Photo Preview" style={{ width: '100px', height: '100px' }} />
+                                    {previewPhotoUrl.length !== 0  ? (
+                                        <img src={previewPhotoUrl} alt="Candidate Photo Preview" style={{ width: '200px', height: '200px' }} />
                                     ) : (
                                         <img src="/img/testicon/8666687_upload_cloud_icon 1.png" alt="Upload Icon" />
                                     )}
@@ -172,16 +176,18 @@ const UploadDocument = () => {
                             </div>
 
                             {/* Candidate Document */}
+
                             <div className="icon-container">
                                 <label htmlFor="candidate-document" className="document-label">Candidate Document</label>
-                                <div className="icon-box"
-
-                                    onClick={() => document.getElementById('candidate-document').click()} style={{ cursor: 'pointer' }}>
-
-                                    {'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg' ? (
-                                        <img src={previewDocumentUrl} alt="Candidate Document Preview" style={{ width: '100px', height: '100px' }} />
+                                <div
+                                    className="icon-box"
+                                    onClick={() => document.getElementById('candidate-document').click()}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    {previewDocumentUrl.length !== 0 ? (
+                                        <img src={previewDocumentUrl} alt="Candidate Document Preview" style={{ width: '200px', height: '200px' }} />
                                     ) : (
-                                        <img src="/img/testicon/8666687_upload_cloud_icon 1.png" alt="Upload Icon" />
+                                        <img src="/img/testicon/8666687_upload_cloud_icon 1.png" alt="Upload Icon" style={{ width: '100px', height: '100px' }} />
                                     )}
                                     <input
                                         type="file"
@@ -189,7 +195,6 @@ const UploadDocument = () => {
                                         onChange={handleFileChange}
                                         style={{ display: 'none' }}
                                     />
-
                                 </div>
                             </div>
                         </div>

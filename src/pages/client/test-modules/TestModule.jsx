@@ -41,9 +41,9 @@ function TestModule() {
 
         fetchQuestions();
         fetchUserImages()
-        
+
     }, []);
- console.log(imageUrl)
+    console.log(imageUrl)
 
     //fetch user profile 
     // Function to fetch user details based on client ID
@@ -51,11 +51,11 @@ function TestModule() {
         try {
             setLoading(true);
             const data = await dispatch(reqToFetchCandidateDocumentDetails(clientId));
-            
+
 
             if (data.payload.data) {
                 const userData = data.payload.data;
-         
+
 
                 if (userData && userData.yourPhoto) {
                     setImageUrl(userData.yourPhoto); // Set the preview URL
@@ -72,41 +72,40 @@ function TestModule() {
 
     // Handle the radio button change
     // Handle the radio button change
-const handleOptionChange = (e) => {
-    const selectedValue = e.target.value;
-    setSelectedOption(selectedValue);
+    const handleOptionChange = (e) => {
+        const selectedValue = e.target.value;
+        setSelectedOption(selectedValue);
 
-    const currentQuestion = questions[selectedQuestion];
-    
-    // Check if the response for the current question already exists
-    const existingResponseIndex = responses.findIndex(
-        (response) => response.questionId === currentQuestion._id
-    );
+        const currentQuestion = questions[selectedQuestion];
 
-    // Create a new response object
-    const newResponse = {
-        questionBankId: currentQuestion.questionBankId,
-        nosId: currentQuestion.nosId,
-        selectedOption: selectedValue,
-        question: currentQuestion.question,
-        questionId: currentQuestion._id
+        // Check if the response for the current question already exists
+        const existingResponseIndex = responses.findIndex(
+            (response) => response.questionId === currentQuestion._id
+        );
+
+        // Create a new response object
+        const newResponse = {
+            questionBankId: currentQuestion.questionBankId,
+            nosId: currentQuestion.nosId,
+            selectedOption: selectedValue,
+            question: currentQuestion.question,
+            questionId: currentQuestion._id
+        };
+
+        let updatedResponses;
+
+        if (existingResponseIndex > -1) {
+            // Update the existing response
+            updatedResponses = [...responses];
+            updatedResponses[existingResponseIndex] = newResponse;
+        } else {
+            // Add the new response
+            updatedResponses = [...responses, newResponse];
+        }
+
+        // Update the responses state
+        setResponses(updatedResponses);
     };
-
-    let updatedResponses;
-
-    if (existingResponseIndex > -1) {
-        // Update the existing response
-        updatedResponses = [...responses];
-        updatedResponses[existingResponseIndex] = newResponse;
-    } else {
-        // Add the new response
-        updatedResponses = [...responses, newResponse];
-    }
-
-    // Update the responses state
-    setResponses(updatedResponses);
-};
-
 
     // Handle question click
     const handleQuestionClick = (index) => {
@@ -116,12 +115,23 @@ const handleOptionChange = (e) => {
 
     const handleSubmit = async () => {
         try {
-            console.log('payload', responses); // This should now log all answers
-            const reduxResponse = await dispatch(reqToSubmitAnswer(responses));
-                    
-            if (reduxResponse.payload) {
-                toast.success('Exam submitted successfully!');
-    
+
+            const token = localStorage.getItem("persist:client");
+            const parsedData = JSON.parse(token);
+            const userToken = parsedData && parsedData.client ? JSON.parse(parsedData.client)?.authentication?.accessToken : null;
+
+            const answerResponse = await axios.post('http://localhost:4000/api/v1/exam/submit-exam', responses, {
+                headers: {
+                    Authorization: `Bearer ${userToken}`
+                },
+            })
+            // console.log(answerResponse.data) 
+            // const reduxResponse = await dispatch(reqToSubmitAnswer(responses));
+
+            if (answerResponse) {
+                toast.success(
+                    answerResponse.message);
+
                 // Optionally reset states here
                 setSelectedOption(null);
                 setResponses([]);
@@ -131,8 +141,6 @@ const handleOptionChange = (e) => {
             console.error('Error submitting exam:', error);
         }
     };
-    
-
 
     // Conditionally set className or inline style for selected option
     const getOptionStyle = (option) => {
@@ -229,13 +237,13 @@ const handleOptionChange = (e) => {
                     </div>
 
                     <div className='image-box'>
-                    <img
-                            src={imageUrl&& imageUrl
+                        <img
+                            src={imageUrl && imageUrl
                                 ? `http://localhost:4000${imageUrl}`
                                 : "/img/testicon/Mask_group.png"}
                             alt="User"
                             height={200}
-                        /> 
+                        />
                     </div>
                 </div>
             </div>

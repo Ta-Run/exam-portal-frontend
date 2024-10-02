@@ -16,10 +16,12 @@ import { Link } from "react-router-dom";
 import { reqToGetBatchDropDown, reqToGetClientJobRoleDropDown, reqToGetSectorDropDown } from "../../../reduxToolkit/services/contentManagementServices";
 import TableComponent from "./TableComponent";
 import { SVGICON } from "../../../constants/IconList";
+import axios from "axios";
 
 const QuestionBankAnalytics = () => {
   const dispatch = useDispatch();
 
+  const [questionData, setQuestionData] = useState([]);
   // Selectors
   const assessmentReducer = useSelector((state) => state.assessment);
   const { loader, clientManageBatch, clientManageBatchPagination } = assessmentReducer;
@@ -92,7 +94,25 @@ const QuestionBankAnalytics = () => {
     dispatch(reqToGetSectorDropDown());
     dispatch(reqToGetClientJobRoleDropDown());
     dispatch(reqToGetBatchDropDown());
+    fetchQuestionBank();
   }, []);
+
+  //fetch Question bank and questions based on sectior id 
+
+  const fetchQuestionBank = async () => {
+    try {
+      // Make an API request using axios
+      const response = await axios.get("http://localhost:4000/api/v1/analytics/questionAnalytics/66867238c57456d8ba93a6d9");
+      console.log(response)
+      // Update the state with the fetched data
+      setQuestionData(response.data.result);
+   
+    } catch (error) {
+      console.error('Error fetching question data:', error);
+  
+   
+    }
+  };
 
   return (
     <>
@@ -286,7 +306,7 @@ const QuestionBankAnalytics = () => {
         </div>
         <div className="content-management-table">
           <div className="table-responsive" ref={contentPdf}>
-            <TableComponent filterData={filterData} handleModalShow={handleModalShow} currentPage={currentPage} itemsPerPage={itemsPerPage} />
+            <TableComponent filterData={filterData} handleModalShow={handleModalShow} currentPage={currentPage} itemsPerPage={itemsPerPage}  questionData={questionData} />
           </div>
           {/* {filterData?.length === 0 && (
                         <div className='text-center pt-3'>
