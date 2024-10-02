@@ -1,8 +1,8 @@
 import React from 'react'
 import { SVGICON } from '../../../constants/IconList'
 
-const TableComponent = ({ filterData, handleModalShow, currentPage, itemsPerPage,questionData }) => {
-   console.log(questionData)
+const TableComponent = ({ filterData, handleModalShow, currentPage, itemsPerPage, questionData }) => {
+    console.log(questionData)
     return (
         <table className="table content-table" id='client-sector-table'>
             <thead>
@@ -52,7 +52,21 @@ const TableComponent = ({ filterData, handleModalShow, currentPage, itemsPerPage
                 </tr>
             </thead>
             {/* <tbody>
-                {filterData?.map((item, index) => {
+
+                {
+                    questionData && questionData.map((data)=>{
+                        console.log(data.questionsData)
+                    })
+                }
+            </tbody> */}
+            <tbody>
+                {questionData && questionData.map((item, index) => {
+                    // console.log(item.questionsData.optionA)
+                    // console.log(item.questionsData.optionB)
+                    // const questionsOp={
+                    // questionsData.question.Optio
+                    // }
+                    const { optionA, optionB, optionC, optionD } = item.questionsData
                     const serialNumber = (currentPage - 1) * itemsPerPage + index + 1;
 
                     return (
@@ -61,10 +75,19 @@ const TableComponent = ({ filterData, handleModalShow, currentPage, itemsPerPage
                                 <h5 className="table_desc">{serialNumber}</h5>
                             </td>
                             <td>
-                                <h5 className="table_desc">{item?.spocPersonName}</h5>
+                                <h5 className="table_desc">{item?.questionsData.question}</h5>
                             </td>
                             <td>
-                                <h5 className="table_desc">{item?.contactNo}</h5>
+                                <h5 className="table_desc">
+                                    <ol>
+                                    <li>{optionA}</li>
+                                
+                                <li>{optionB}</li>
+                                <li>{optionC}</li>
+                                <li>{optionD}</li>
+                                </ol>
+                                
+                                </h5>
                             </td>
                             <td>
                                 <h5 className="table_desc">{item?.emailId}</h5>
@@ -82,12 +105,12 @@ const TableComponent = ({ filterData, handleModalShow, currentPage, itemsPerPage
                             <td>
                                 <h5 className="table_desc">{item?.clientName}</h5>
                             </td>
-                            <td>
+                            {/* <td>
                                 <button type="button" className={`${item?.status === "Active" ? "active-sector" : "inActive-sector"}`} onClick={() => handleModalShow("statusShow", item?._id)}>
                                     {item?.status}
                                 </button>
-                            </td>
-                            <td>
+                            </td> */}
+                            {/* <td>
                                 <div className="table_icons">
                                     <button type="button" className="table-btn me-3" onClick={() => handleModalShow("editShow", item)}>
                                         {SVGICON.editSvg}
@@ -96,11 +119,11 @@ const TableComponent = ({ filterData, handleModalShow, currentPage, itemsPerPage
                                         {SVGICON.deleteSvg}
                                     </button>
                                 </div>
-                            </td>
+                            </td> */}
                         </tr>
                     )
                 })}
-            </tbody> */}
+            </tbody>
         </table>
     )
 }

@@ -98,12 +98,18 @@ const QuestionBankAnalytics = () => {
   }, []);
 
   //fetch Question bank and questions based on sectior id 
-
+  const token = localStorage.getItem("persist:client");
+  const parsedData = JSON.parse(token);
+  const userToken = parsedData && parsedData.client ? JSON.parse(parsedData.client)?.authentication?.accessToken : null;
   const fetchQuestionBank = async () => {
     try {
       // Make an API request using axios
-      const response = await axios.get("http://localhost:4000/api/v1/analytics/questionAnalytics/66867238c57456d8ba93a6d9");
-      console.log(response)
+      const response = await axios.get("http://localhost:4000/api/v1/analytics/questionAnalytics/66867238c57456d8ba93a6d9", {
+        headers: {
+            'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
+        },
+    });
+
       // Update the state with the fetched data
       setQuestionData(response.data.result);
    
