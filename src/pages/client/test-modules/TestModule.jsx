@@ -7,21 +7,19 @@ import { useParams, useLocation } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { reqToGetQuestionsModule, reqToSubmitAnswer, reqToFetchCandidateDocumentDetails } from '../../../reduxToolkit/services/testModuleService';
 
-
 function TestModule() {
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectedQuestion, setSelectedQuestion] = useState(0);
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [imageUrl, setImageUrl] = useState([])
+    const [imageUrl, setImageUrl] = useState([]);
+    const [showPopup, setShowPopup] = useState(false); // State for popup visibility
 
     let { id } = useParams();
     const dispatch = useDispatch();
     const location = useLocation();
     const clientId = location.state || {};
-    console.log(clientId)
-
 
     useEffect(() => {
         const fetchQuestions = async () => {
@@ -30,7 +28,7 @@ function TestModule() {
                 if (reduxApi.payload.data) {
                     setQuestions(reduxApi.payload.data);
                 } else {
-                    console.error('Failed to fetch questions:',);
+                    console.error('Failed to fetch questions:');
                 }
             } catch (error) {
                 console.error('Error fetching questions:', error);
@@ -40,23 +38,16 @@ function TestModule() {
         };
 
         fetchQuestions();
-        fetchUserImages()
+        fetchUserImages();
+    }, [dispatch, id]);
 
-    }, []);
-    console.log(imageUrl)
-
-    //fetch user profile 
-    // Function to fetch user details based on client ID
+    // Fetch user profile 
     const fetchUserImages = async () => {
         try {
             setLoading(true);
             const data = await dispatch(reqToFetchCandidateDocumentDetails(clientId));
-
-
             if (data.payload.data) {
                 const userData = data.payload.data;
-
-
                 if (userData && userData.yourPhoto) {
                     setImageUrl(userData.yourPhoto); // Set the preview URL
                 }
@@ -70,8 +61,6 @@ function TestModule() {
         }
     };
 
-    // Handle the radio button change
-    // Handle the radio button change
     const handleOptionChange = (e) => {
         const selectedValue = e.target.value;
         setSelectedOption(selectedValue);
@@ -83,7 +72,6 @@ function TestModule() {
             (response) => response.questionId === currentQuestion._id
         );
 
-        // Create a new response object
         const newResponse = {
             questionBankId: currentQuestion.questionBankId,
             nosId: currentQuestion.nosId,
@@ -93,21 +81,16 @@ function TestModule() {
         };
 
         let updatedResponses;
-
         if (existingResponseIndex > -1) {
-            // Update the existing response
             updatedResponses = [...responses];
             updatedResponses[existingResponseIndex] = newResponse;
         } else {
-            // Add the new response
             updatedResponses = [...responses, newResponse];
         }
 
-        // Update the responses state
         setResponses(updatedResponses);
     };
 
-    // Handle question click
     const handleQuestionClick = (index) => {
         setSelectedQuestion(index);
         setSelectedOption(responses.find(response => response.questionId === questions[index]._id)?.selectedOption || null);
@@ -115,7 +98,6 @@ function TestModule() {
 
     const handleSubmit = async () => {
         try {
-
             const token = localStorage.getItem("persist:client");
             const parsedData = JSON.parse(token);
             const userToken = parsedData && parsedData.client ? JSON.parse(parsedData.client)?.authentication?.accessToken : null;
@@ -124,15 +106,11 @@ function TestModule() {
                 headers: {
                     Authorization: `Bearer ${userToken}`
                 },
-            })
-            // console.log(answerResponse.data) 
-            // const reduxResponse = await dispatch(reqToSubmitAnswer(responses));
+            });
 
             if (answerResponse) {
-                toast.success(
-                    answerResponse.message);
-
-                // Optionally reset states here
+                toast.success('Submitted answer');
+                handleClick(); // Show the popup
                 setSelectedOption(null);
                 setResponses([]);
                 setSelectedQuestion(0);
@@ -142,20 +120,26 @@ function TestModule() {
         }
     };
 
-    // Conditionally set className or inline style for selected option
+    const handleClick = () => {
+        setShowPopup(true);
+    };
+
+    const closePopup = () => {
+        setShowPopup(false);
+    };
+
     const getOptionStyle = (option) => {
         return selectedOption === option ? {
             background: 'linear-gradient(180deg, #15BB30 -25%, #1FB036 51.86%, #00A65A 122%)',
             color: 'white',
             position: 'relative',
-            paddingLeft: '30px', // Provide space for the checkmark
-            borderRadius: '5px', // Add border radius if needed
-            border: '1px solid #00A65A', // Add border to match style
+            paddingLeft: '30px',
+            borderRadius: '5px',
+            border: '1px solid #00A65A',
             transition: 'background 0.3s ease',
         } : {};
     };
 
-    // Handle next question
     const handleNextQuestion = () => {
         if (selectedQuestion < questions.length - 1) {
             setSelectedQuestion(selectedQuestion + 1);
@@ -163,7 +147,6 @@ function TestModule() {
         }
     };
 
-    // Handle previous question
     const handlePreviousQuestion = () => {
         if (selectedQuestion > 0) {
             setSelectedQuestion(selectedQuestion - 1);
@@ -180,7 +163,6 @@ function TestModule() {
             <Header name='TestModule' />
             <div className="test-module-container">
                 <div className='left-box'>
-                    {/* Progress Bar */}
                     <div className='progress-bar-container'>
                         <p>Question {selectedQuestion + 1}/{questions.length}</p>
                         <div className='progress-bar'>
@@ -188,7 +170,6 @@ function TestModule() {
                         </div>
                     </div>
 
-                    {/* Questions Section */}
                     {questions.length > 0 && (
                         <div className='questions-section'>
                             <p className='question-box'>{questions[selectedQuestion].question}</p>
@@ -234,6 +215,14 @@ function TestModule() {
 
                     <div className='submit-box'>
                         <button className='submit-btn' onClick={handleSubmit}>Submit</button>
+                        {showPopup && (
+                            <div className="popup">
+                                <div className="thumbsup">&#128077;</div>
+                                <p style={{ color: 'black', fontSize: '16px' }}>Submitted Successfully!</p>
+                                <p style={{ color: 'black', fontSize: '14px' }}>You can close the window now!</p>
+                                <div className="ok-box" onClick={closePopup}>OK</div>
+                            </div>
+                        )}
                     </div>
 
                     <div className='image-box'>

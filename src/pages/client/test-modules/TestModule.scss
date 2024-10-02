@@ -36,7 +36,7 @@
 
             p {
                 margin-top: 10px;
-                font-size: 14px;
+                font-size: 18px;
                 color: #333;
             }
         }
@@ -71,6 +71,8 @@
                 padding: 10px;
                 background-color: #fff;
                 position: relative;
+                font-size: 18px; /* Adjust the size as needed */
+                color: #333;
 
                 input[type='radio'] {
                     margin-right: 10px;
@@ -122,6 +124,8 @@
                 padding: 10px;
                 cursor: pointer;
                 text-align: center;
+                z-index: 1;
+                pointer-events: auto;
             }
 
             .question-number:hover {
@@ -316,6 +320,49 @@
     }
 
 }
+.submit-box {
+    position: relative;
+  }
+  
+.popup {
+    position: fixed;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    width: 380px;
+    height:34%;
+    background-color: #f1f1f1;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    text-align: center; 
+  }
+//   .close-icon {
+//     position: fixed;
+//     top: -10px;
+//     right: 10px;
+//     font-size: 30px;
+//     // font-weight: bold;
+//     cursor: pointer;
+//   }
+  
+  .thumbsup {
+    font-size: 30px; 
+    margin-top: 10px; 
+    // color: blue; /* Optional: green color */
+  }
+  .ok-box {
+    background-color:#6cd0d0; 
+    color: white; 
+    padding: 10px; 
+    border-radius: 5px; 
+    margin-top: 20px; 
+    width: 100px; 
+    margin-left: auto; 
+    margin-right: auto; 
+  }
+
 
 // Responsive design for smaller screens
 @media screen and (max-width: 768px) {
