@@ -43,6 +43,8 @@ const QuestionBankAnalytics = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [startdate, setstartdate] = useState('')
+  const [enddate, setenddate] = useState('')
 
   // handleModalShow
   const handleModalShow = (type, data = null) => {
@@ -71,10 +73,37 @@ const QuestionBankAnalytics = () => {
     handleGetManageBatch();
     handleModalClose();
   };
-
+  // sort by date 
+  const sortDatewise = async (sdate, edate) => {
+    if (!sdate || !edate) {
+      console.log('Start date or End date is missing');
+      return; // If any date is missing, return without fetching data
+    }
+    try {
+      // Make an API request using axios
+      const response = await axios.get("http://localhost:4000/api/v1/analytics/questionAnalytics/66867238c57456d8ba93a6d9", {
+        headers: {
+          'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
+        },
+        // Passing the startDate and endDate as query parameters
+        params: {
+          startDate: sdate,
+          endDate: edate
+        }
+      });
+  
+      // Update the state with the fetched data
+      setQuestionData(response.data.result);
+     
+    } catch (error) {
+      console.error('Error fetching question data:', error);
+    }
+  }
+  
   // Filter Data
   const filterData = useMemo(() => clientManageBatch?.filter((item) => {
     return (
+
       item?._id?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
       item?.BatchCode?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
       item?.TrainingPartnerName?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
@@ -94,7 +123,7 @@ const QuestionBankAnalytics = () => {
     dispatch(reqToGetSectorDropDown());
     dispatch(reqToGetClientJobRoleDropDown());
     dispatch(reqToGetBatchDropDown());
-    fetchQuestionBank();
+    //fetchQuestionBank();
   }, []);
 
   //fetch Question bank and questions based on sectior id 
@@ -111,6 +140,7 @@ const QuestionBankAnalytics = () => {
     });
 
       // Update the state with the fetched data
+      //console.log(response)
       setQuestionData(response.data.result);
    
     } catch (error) {
@@ -141,6 +171,7 @@ const QuestionBankAnalytics = () => {
                         {item?.name}
                       </option>
                     );
+
                   })}
                 </select>
               </div>
@@ -150,7 +181,11 @@ const QuestionBankAnalytics = () => {
                 <label htmlFor="District" className="form-label mb-2">
                   From Date
                 </label>
-                <input type="date" className="form-date-select" />
+                <input type="date"
+                  value={startdate}
+                  onChange={(e)=>setstartdate(e.target.value)}
+                 className="form-date-select"
+                 />
               </div>
             </div>
             <div className="col-lg-3 mb-lg-0 mb-4">
@@ -158,11 +193,19 @@ const QuestionBankAnalytics = () => {
                 <label htmlFor="District" className="form-label mb-2">
                   To Date
                 </label>
-                <input type="date" className="form-date-select" />
+                <input type="date"
+            value={enddate}
+            onChange={(e)=>setenddate(e.target.value)}
+                 className="form-date-select" 
+              
+                 />
               </div>
             </div>
             <div className="col-lg-2 mb-lg-0 mb-4">
-              <button type="button" className="delete-btn me-3">Check Details</button>
+              <button type="button" className="delete-btn me-3"
+
+              onClick={()=>sortDatewise(startdate,enddate)}
+              >Check Details</button>
             </div>
           </div>
         </div>

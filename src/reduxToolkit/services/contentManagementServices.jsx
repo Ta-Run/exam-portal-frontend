@@ -750,6 +750,7 @@ export const reqToGetSectorDropDown = createAsyncThunk("reqToGetSectorDropDown",
         const response = await Axios.get(apiendpoints.getSectorDropDown, authCommonHeader());
 
         if (response.data.req) {
+            // console.log(response.data.data + "this is the temp data")
             return response.data.data;
         } else {
             toast.error(response.data.msg);
