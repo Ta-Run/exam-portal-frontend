@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./css/App.scss";
 import { ToastContainer } from "react-toastify";
@@ -8,7 +8,6 @@ import NoPageFound from "./pages/no-page-found/NoPageFound";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 
 //? ********************************** Admin **********************************
-
 import Login from "./pages/admin/login/Login";
 import Dashboard from "./pages/admin/dashboard/Dashboard";
 import ContentManagement from "./pages/admin/content-management/ContentManagement";
@@ -17,7 +16,6 @@ import Assessment from "./pages/client/assessment/Assessment";
 import Support from "./pages/client/support/Support";
 
 //? ********************************** Client **********************************
-
 import ClientLogin from "./pages/client/login/Login";
 import ManageChildUser from "./pages/client/manage-child-user/ManageChildUser";
 import ClientDashboard from "./pages/client/dashboard/Dashboard";
@@ -49,21 +47,30 @@ import EmailTemplates from "./pages/client/email-templates/EmailTemplates";
 import AssessorsAnalytics from "./pages/client/assessors-analytics/AssessorsAnalytics";
 import QuestionBankAnalytics from "./pages/client/question-bank-analytics/QuestionBankAnalytics";
 import JobRolesAnalytics from "./pages/client/job-roles-analytics/JobRolesAnalytics";
-import SectorsAnalytics from "./pages/client/sectors-analytics/SectorsAnalytics";
+import SectorsAnalytics from './pages/client/sectors-analytics/SectorsAnalytics';
 import BatchsAnalytics from './pages/client/batchs-analytics/BatchsAnalytics';
 
 import TestModule from "./pages/client/test-modules/TestModule";
 import UploadDocument from "./pages/client/test-modules/UploadDocument";
 //? ********************************** SPOC Person **********************************
-
 import SpocPersonLogin from "./pages/spoc-person/login/Login";
 
 //? ********************************** Child user **********************************
-
 import ChildUserLogin from "./pages/child-user/login/Login";
 
+// Import Redux hooks and actions
+import { useDispatch } from "react-redux";
+import { setToken } from "./reduxToolkit/slice/adminAuthSlice"; // Update path as needed
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"; // Replace with your actual token
+    if (token) {
+      dispatch(setToken(token)); // Dispatch the token to Redux store
+    }
+  }, [dispatch]);
 
   return (
     <>
@@ -81,8 +88,6 @@ const App = () => {
           {/* Content Management */}
           <Route path="/content-management" element={<ContentManagement />} />
           <Route path="/manage-clients" element={<ManageClients />} />
-          {/* <Route path='/assessment' element={<Assessment />} /> */}
-          {/* <Route path='/support' element={<Support />} /> */}
         </Route>
 
         {/* Client Routes */}
@@ -129,10 +134,8 @@ const App = () => {
           <Route path="/client/job-roles-analytics" element={<JobRolesAnalytics />} />
            {/* Test Module */}
            <Route path="/client/test-modules/TestModule/:id" element={<TestModule />} />
-{/* Test Module */}
- <Route path="/client/test-modules/UploadDocument" element={<UploadDocument />} />
-
-
+           {/* Test Module */}
+           <Route path="/client/test-modules/UploadDocument" element={<UploadDocument />} />
         </Route>
 
         {/* SPOC Person Routes */}
@@ -179,16 +182,18 @@ const App = () => {
           <Route path="/spoc-person/job-roles-analytics" element={<JobRolesAnalytics />} />
         </Route>
 
-        {/* Child user Routes */}
+        {/* Child User Routes */}
         <Route element={<ChildUserLayout />}>
           {/* Dashboard */}
           <Route path="/child-user/dashboard" element={<ClientDashboard />} />
           {/* Content Management */}
+          <Route path="/child-user/manage-sector" element={<ManageSector />} />
           <Route path="/child-user/manage-job-role" element={<ManageJobRole />} />
           <Route path="/child-user/manage-nos" element={<ManageNos />} />
           <Route path="/child-user/manage-scheme" element={<ManageScheme />} />
           <Route path="/child-user/manage-question-bank" element={<ManageQuestionBank />} />
           <Route path="/child-user/question/:id" element={<ManageQuestion />} />
+          <Route path="/child-user/manage-child-user" element={<ManageChildUser />} />
           {/* User Management */}
           <Route path="/child-user/manage-assessor" element={<ManageAssessor />} />
           <Route path="/child-user/candidate-bulk-upload" element={<CandidateBulkUpload />} />
@@ -208,22 +213,20 @@ const App = () => {
           <Route path="/child-user/batch-result" element={<BatchResult />} />
           <Route path="/child-user/batch-report" element={<BatchReport />} />
           {/* Support */}
-          {/* <Route path="/child-user/open-ticket" element={<OpenTicket />} />
+          <Route path="/child-user/open-ticket" element={<OpenTicket />} />
           <Route path="/child-user/closed-ticket" element={<ClosedTicket />} />
           <Route path="/child-user/user-manual" element={<UserManual />} />
           <Route path="/child-user/help" element={<Help />} />
-          <Route path="/child-user/email-templates" element={<EmailTemplates />} /> */}
+          <Route path="/child-user/email-templates" element={<EmailTemplates />} />
           {/* Analytics Report */}
           <Route path="/child-user/assessors-analytics" element={<AssessorsAnalytics />} />
           <Route path="/child-user/sectors-analytics" element={<SectorsAnalytics />} />
           <Route path="/child-user/question-bank-analytics" element={<QuestionBankAnalytics />} />
           <Route path="/child-user/batchs-analytics" element={<BatchsAnalytics />} />
           <Route path="/child-user/job-roles-analytics" element={<JobRolesAnalytics />} />
-
-         
-
         </Route>
 
+        {/* No page found */}
         <Route path="*" element={<NoPageFound />} />
       </Routes>
       <ToastContainer />

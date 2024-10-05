@@ -7,47 +7,60 @@ import examIcon from "../../../images/9e88f01c1b9d24ff5fff2b4111ac7bb5.png";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { reqToFetchCandidateDocumentDetails } from "../../../reduxToolkit/services/testModuleService";
+import { setToken } from "../../../reduxToolkit/slice/adminAuthSlice"; 
 
 const UploadDocument = () => {
   const [candidatePhoto, setCandidatePhoto] = useState(null);
   const [previewPhotoUrl, setPreviewPhotoUrl] = useState([]);
   const [previewDocumentUrl, setPreviewDocumentUrl] = useState([]);
-
   const [candidateDocument, setCandidateDocument] = useState(null);
   const [error, setError] = useState("");
   const [clientDetail, setClientDetail] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const id = clientDetail._id;
+  
   const dispatch = useDispatch();
-  var headers =   {
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiJkNjgzYjU3M2JiYmE3ODc0NjM5NTZkOWQ0NzBlODMyNTM3NjY5OWU5ZmJiMTNhZjI0MGNiOGY3ZmNiN2VhMDJhIiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc4NTEzNzEsImV4cCI6MTc1OTM4NzM3MX0.s5FHipWAP3z-5AC6h80MCamRibHSAocXp-D6R4ova2k",
-  }
+  
+  // Get token from Redux store
+  const userToken = useSelector((state) => state.adminAuth.token);
 
+  // Fetch client details on component mount
   useEffect(() => {
+    const tokenFromLocalStorage = localStorage.getItem("persist:client");
+    const parsedData = JSON.parse(tokenFromLocalStorage);
+    const token =
+      parsedData && parsedData.client
+        ? JSON.parse(parsedData.client)?.authentication?.accessToken
+        : null;
+
+    if (token) {
+      dispatch(setToken(token)); // Store token in Redux state
+    }
+
     getClientExamDetails();
-  }, []);
+  }, [dispatch]);
 
   const getClientExamDetails = async () => {
     try {
-      const data = await axios.get(
+      const response = await axios.get(
         "http://localhost:4000/api/v1/exam/clietnDetail",
-        headers
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`, // Use the userToken from Redux store
+          },
+        }
       );
 
-      if ((data.data.status = 200)) {
-        setClientDetail(data.data.data[0]);
+      if (response.data.status === 200) {
+        setClientDetail(response.data.data[0]);
       }
     } catch (err) {
       console.error("Error:", err);
       setError("An error occurred: " + err.message);
     }
   };
-  console.log('cclient Details',clientDetail)
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -65,15 +78,7 @@ const UploadDocument = () => {
       }
     }
   };
-  const token = localStorage.getItem("persist:client");
-  const parsedData = JSON.parse(token);
-  const userToken =
-    parsedData && parsedData.client
-      ? JSON.parse(parsedData.client)?.authentication?.accessToken
-      : null;
 
-
-      console.log('client Detaiols',clientDetail)
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
@@ -87,31 +92,30 @@ const UploadDocument = () => {
     }
 
     formData.append("accessCode", 1234);
-     
+
     try {
-       
       const response = await fetch(
         "http://localhost:4000/api/v1/application/upload",
         {
           method: "POST",
-         
-          headers,
+          headers: {
+            Authorization: `Bearer ${userToken}`, // Use userToken from Redux store
+          },
           body: formData,
         }
       );
 
-      const textResponse = await response.text(); // Read the response as
+      const textResponse = await response.text();
 
       if (response.ok) {
         const result = JSON.parse(textResponse);
         if (result.res) {
           toast.success("Document Uploaded Successfully");
-          // fetchUserImages();
-          navigate(`/client/test-modules/TestModule/${id}`, {
+          navigate(`/client/test-modules/TestModule/${clientDetail._id}`, {
             state: clientDetail.clientId,
           });
         } else {
-          toast.error("Please Upload Document Properply");
+          toast.error("Please Upload Document Properly");
         }
       } else {
         console.error("Upload failed:", textResponse);
@@ -126,8 +130,6 @@ const UploadDocument = () => {
   const openCamera = (type) => {
     console.log(`Open camera for: ${type}`);
   };
-
-  console.log(previewPhotoUrl);
 
   return (
     <div>
@@ -187,7 +189,6 @@ const UploadDocument = () => {
                   }
                   style={{ cursor: "pointer" }}
                 >
-                  {/* Display selected image or fallback to the upload icon */}
                   {previewPhotoUrl.length !== 0 ? (
                     <img
                       src={previewPhotoUrl}
@@ -221,7 +222,6 @@ const UploadDocument = () => {
               </div>
 
               {/* Candidate Document */}
-
               <div className="icon-container">
                 <label htmlFor="candidate-document" className="document-label">
                   Candidate Document

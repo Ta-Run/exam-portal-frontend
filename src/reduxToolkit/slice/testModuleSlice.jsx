@@ -32,7 +32,7 @@ const testModuleSlice = createSlice({
         })
         builder.addCase(reqToFetchCandidateDocumentDetails.fulfilled, (state, action) => {
             state.loader = false;
-            state.spocPerson = action.payload.data;
+            state.spocPerson = action.payload
         })
         builder.addCase(reqToFetchCandidateDocumentDetails.rejected, (state, action) => {
             state.loader = false;

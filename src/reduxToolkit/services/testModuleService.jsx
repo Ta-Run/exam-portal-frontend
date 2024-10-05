@@ -13,6 +13,7 @@ export const reqToGetQuestionsModule = createAsyncThunk("reqToGetQuestionsModule
     try {
 
         const response = await Axios.get(`${apiendpoints.getTestModuleQuestion.replace(":id", id)}`, authCommonHeader());
+        console.log('Fetching from URL:', `${apiendpoints.getCondidateDocument.replace(":id", id)}`);
 
         if (response.data.res) {
             return response.data;
@@ -32,7 +33,7 @@ export const reqToFetchCandidateDocumentDetails = createAsyncThunk("reqToFetchCa
         if (response.data) {
             return response.data;
         } else {
-            toast.error(response.data.msg);
+            toast.error(response.data.msg)+"problem to fetch img ";
         }
     } catch (error) {
         console.log(error);

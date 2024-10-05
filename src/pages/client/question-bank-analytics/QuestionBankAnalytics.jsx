@@ -123,7 +123,7 @@ const QuestionBankAnalytics = () => {
     dispatch(reqToGetSectorDropDown());
     dispatch(reqToGetClientJobRoleDropDown());
     dispatch(reqToGetBatchDropDown());
-    //fetchQuestionBank();
+    fetchQuestionBank();
   }, []);
 
   //fetch Question bank and questions based on sectior id 

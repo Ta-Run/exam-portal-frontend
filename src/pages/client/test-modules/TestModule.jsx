@@ -17,6 +17,7 @@ function TestModule() {
     const [showPopup, setShowPopup] = useState(false); // State for popup visibility
 
     let { id } = useParams();
+    console.log(id)
     const dispatch = useDispatch();
     const location = useLocation();
     const clientId = location.state || {};
@@ -25,8 +26,8 @@ function TestModule() {
         const fetchQuestions = async () => {
             try {
                 const reduxApi = await dispatch(reqToGetQuestionsModule(id));
-                if (reduxApi.payload.data) {
-                    setQuestions(reduxApi.payload.data);
+                if (reduxApi.payload) {
+                    setQuestions(reduxApi.payload);
                 } else {
                     console.error('Failed to fetch questions:');
                 }
@@ -46,8 +47,8 @@ function TestModule() {
         try {
             setLoading(true);
             const data = await dispatch(reqToFetchCandidateDocumentDetails(clientId));
-            if (data.payload.data) {
-                const userData = data.payload.data;
+            if (data.payload) {
+                const userData = data.payload;
                 if (userData && userData.yourPhoto) {
                     setImageUrl(userData.yourPhoto); // Set the preview URL
                 }
