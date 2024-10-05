@@ -27,7 +27,9 @@ export const reqToFetchClientExamDetails = createAsyncThunk("reqToFetchClientExa
 export const reqToUploadClientDocument = createAsyncThunk("reqToUploadClientDocument", async (data) => {
 
     try {
-        const response = await Axios.post(`${apiendpoints.uploadExamClientDoc, data}`, authCommonHeader());
+        const response = await Axios.post(`${apiendpoints.uploadExamClientDoc}`,data, authCommonHeader());
+
+        console.log('service response',response)
         if (response.data) {
             return response.data;
         } else {

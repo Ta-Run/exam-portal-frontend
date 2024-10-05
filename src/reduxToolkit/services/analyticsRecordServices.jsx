@@ -17,7 +17,7 @@ export const reqFetchAnalyticsRecord = createAsyncThunk("reqFetchAnalyticsRecord
 
         // Make the API request
         const response = await Axios.get(url, authCommonHeader());
-        console.log('response',response)
+        console.log('response', response)
 
         // Check if response contains data
         if (response.data) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../../components/header/admin/Header";
 import Loader from "../../../components/loader/Loader";
@@ -6,6 +6,7 @@ import { reqToGetSectorDropDown } from "../../../reduxToolkit/services/contentMa
 import { reqFetchAnalyticsRecord } from "../../../reduxToolkit/services/analyticsRecordServices.jsx";
 import StateStatusChart from "../assessors-analytics/StateStatusChart.jsx";
 import JobRoleStatusChart from "../assessors-analytics/JobRoleStatusChart.jsx";
+import { toast } from "react-toastify"; // Add this line to use toast for error messages
 
 const SectorsAnalytics = () => {
     const dispatch = useDispatch();
@@ -37,15 +38,35 @@ const SectorsAnalytics = () => {
         }
     };
 
+    // Validation to check if all fields are filled
+    const isFilterValid = () => {
+        if (!selectedSector) {
+            toast.error("Please select a sector");
+            return false;
+        }
+        if (!fromDate) {
+            toast.error("Please select a from date");
+            return false;
+        }
+        if (!toDate) {
+            toast.error("Please select a to date");
+            return false;
+        }
+        return true;
+    };
+
     // Fetch analytics record based on sector and date filter
     const handleFilterSubmit = () => {
-        const sectorId = selectedSector || ""; // Pass empty if no sector selected
-        dispatch(reqFetchAnalyticsRecord({
-            sectorId,
-            from: fromDate,
-            to: toDate,
-        }));
-        setFilterApplied(true); // To track whether filter is applied
+        if (isFilterValid()) {
+            // Only dispatch if all filters are filled
+            const sectorId = selectedSector || ""; // Pass empty if no sector selected
+            dispatch(reqFetchAnalyticsRecord({
+                sectorId,
+                from: fromDate,
+                to: toDate,
+            }));
+            setFilterApplied(true); // To track whether filter is applied
+        }
     };
 
     // Get Sector Dropdown on component mount
@@ -202,11 +223,11 @@ const SectorsAnalytics = () => {
                                             </div>
                                             <div className="col-6">
                                                 <div className="right-side-area text-end">
-                                                    <div className="number mb-4" style={{ borderColor: "#6B57E9" }}>
+                                                    <div className="number mb-4" style={{ borderColor: "#3D5EEA" }}>
                                                         <h4>{districtCount}</h4>
                                                     </div>
                                                     <div className="text">
-                                                        <h5>Total Districts</h5>
+                                                        <h5>Total Districts Assessed</h5>
                                                     </div>
                                                 </div>
                                             </div>
@@ -216,12 +237,9 @@ const SectorsAnalytics = () => {
                             </div>
                         </div>
 
-                        <div className="chart-wrapper mb-4">
-                            <StateStatusChart stateBatchStatus={stateBatchStatus} />
-                        </div>
-                        <div className="chart-wrapper">
-                            <JobRoleStatusChart jobRoleStatus={jobRoleStatus} />
-                        </div>
+                        {/* Analytics charts */}
+                        <StateStatusChart stateBatchStatus={stateBatchStatus} />
+                        <JobRoleStatusChart jobRoleStatus={jobRoleStatus} />
                     </>
                 )}
             </section>
