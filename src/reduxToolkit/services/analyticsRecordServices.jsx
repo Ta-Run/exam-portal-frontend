@@ -30,3 +30,23 @@ export const reqFetchAnalyticsRecord = createAsyncThunk("reqFetchAnalyticsRecord
         toast.error("Failed to fetch analytics records. Please try again.");
     }
 });
+
+export const reqFetchQuestionAnalyticsRecord = createAsyncThunk("reqFetchQuestionAnalyticsRecord", async (data) => {
+    try {
+        
+        const { id, startDate, endDate } = data;
+        const url = `${apiendpoints.getQuestionAnalyticsRecordsReport.replace(":id", id)}?from=${startDate}&to=${endDate}`;
+
+        const response = await Axios.get(url, authCommonHeader());
+
+        // Check if response contains data
+        if (response.data) {
+            return response.data;  // Return the data to be handled in Redux
+        } else {
+            toast.error(response.data.msg);
+        }
+    } catch (error) {
+        console.error("Error fetching analytics record:", error);
+        toast.error("Failed to fetch analytics records. Please try again.");
+    }
+});

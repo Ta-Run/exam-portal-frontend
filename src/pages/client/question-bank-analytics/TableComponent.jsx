@@ -1,7 +1,7 @@
 import React from 'react'
 import { SVGICON } from '../../../constants/IconList'
 
-const TableComponent = ({ filterData, handleModalShow, currentPage, itemsPerPage, questionData }) => {
+const TableComponent = ({  currentPage, itemsPerPage, questionData }) => {
     console.log(questionData)
     return (
         <table className="table content-table" id='client-sector-table'>

@@ -145,6 +145,7 @@ export const apiendpoints = {
 
         //   ***************** AnalyticsRecord Reports *****************
     getAnalyticsRecordsReport: "analytics/analyticReports/:id",
+    getQuestionAnalyticsRecordsReport: "analytics/questionAnalytics/:id",
 }
 
 export const messages = {

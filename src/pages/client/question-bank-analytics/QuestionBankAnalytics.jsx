@@ -1,22 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CSVLink } from "react-csv";
-
-
 import Header from "../../../components/header/admin/Header";
-import Pagination from "../../../components/pagination/Pagination";
-import Loader from "../../../components/loader/Loader";
-import { ManageBatchHeader, spocPersonHeader } from "../../../constants/header";
-import DeleteModal from "../../../components/modal/delete/DeleteModal";
-import AddManageBatch from "../../../components/offcanvas/manage-batch/AddManageBatch";
-import EditManageBatch from './../../../components/offcanvas/manage-batch/EditManageBatch';
-import { reqToDeleteClientManageBatch, reqToGetClientManageBatch } from "../../../reduxToolkit/services/assessmentServices";
-import { useDisablePrevDate } from "../../../hooks/useDisablePrevDate";
-import { Link } from "react-router-dom";
-import { reqToGetBatchDropDown, reqToGetClientJobRoleDropDown, reqToGetSectorDropDown } from "../../../reduxToolkit/services/contentManagementServices";
+import { reqToGetSectorDropDown } from "../../../reduxToolkit/services/contentManagementServices";
+import { reqFetchQuestionAnalyticsRecord } from "../../../reduxToolkit/services/analyticsRecordServices";
 import TableComponent from "./TableComponent";
 import { SVGICON } from "../../../constants/IconList";
-import axios from "axios";
+import { toast } from "react-toastify";
 
 const QuestionBankAnalytics = () => {
   const dispatch = useDispatch();
@@ -29,12 +18,9 @@ const QuestionBankAnalytics = () => {
   const contentManagementReducer = useSelector((state) => state.contentManagement);
   const { sectorDropDown, clientJobRoleDropDown, clientBatchDropDown } = contentManagementReducer;
 
+  // const analyticsRecordsReducer = useSelector((state) => state.AnalyticsMangement);
 
-  const analyticsRecordsReducer = useSelector((state) => state.AnalyticsMangement);
-
-  const { stateCount, batchCount, districtCount, candidateCount, jobRoleStatus, stateBatchStatus } = analyticsRecordsReducer
-
-
+  // const { stateCount, batchCount, districtCount, candidateCount, jobRoleStatus, stateBatchStatus } = analyticsRecordsReducer
   // useRef
   const contentPdf = useRef();
 
@@ -44,6 +30,7 @@ const QuestionBankAnalytics = () => {
     editShow: false,
     deleteShow: false,
   });
+
   const [id, setId] = useState(null);
   const [editData, setEditData] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,6 +38,7 @@ const QuestionBankAnalytics = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [startdate, setstartdate] = useState('')
   const [enddate, setenddate] = useState('')
+  const [selectedSector, setSelectedSector] = useState("");
 
   // handleModalShow
   const handleModalShow = (type, data = null) => {
@@ -59,100 +47,30 @@ const QuestionBankAnalytics = () => {
     if (type === "deleteShow") setId(data);
   };
 
-  // handleModalClose
-  const handleModalClose = () => {
-    setModalShow({
-      show: false,
-      editShow: false,
-      deleteShow: false,
-    });
-  };
-
-  // handleGetManageBatch
-  const handleGetManageBatch = async () => {
-    await dispatch(reqToGetClientManageBatch({ page: currentPage, limit: itemsPerPage }));
-  }
-
-  // handleDelete
-  const handleDelete = async () => {
-    await dispatch(reqToDeleteClientManageBatch(id));
-    handleGetManageBatch();
-    handleModalClose();
-  };
-  // sort by date 
-  const sortDatewise = async (sdate, edate) => {
-    if (!sdate || !edate) {
-      console.log('Start date or End date is missing');
-      return; // If any date is missing, return without fetching data
-    }
-    try {
-      // Make an API request using axios
-      const response = await axios.get("http://localhost:4000/api/v1/analytics/questionAnalytics/66867238c57456d8ba93a6d9", {
-        headers: {
-          'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
-        },
-        // Passing the startDate and endDate as query parameters
-        params: {
-          startDate: sdate,
-          endDate: edate
-        }
-      });
-
-      // Update the state with the fetched data
-      setQuestionData(response.data.result);
-
-    } catch (error) {
-      console.error('Error fetching question data:', error);
-    }
-  }
-
-  // Filter Data
-  const filterData = useMemo(() => clientManageBatch?.filter((item) => {
-    return (
-
-      item?._id?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-      item?.BatchCode?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-      item?.TrainingPartnerName?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-      item?.TrainingCenterName?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-      item?.state?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-      item?.district?.toLowerCase()?.includes(searchTerm.toLowerCase())
-    );
-  }), [clientManageBatch, searchTerm]);
-
-  // Get Manage Candidate Data
-  useEffect(() => {
-    handleGetManageBatch();
-  }, [dispatch, currentPage, itemsPerPage]);
-
   // Get Sector & Job Role Dropdown
   useEffect(() => {
     dispatch(reqToGetSectorDropDown());
-    dispatch(reqToGetClientJobRoleDropDown());
-    dispatch(reqToGetBatchDropDown());
-    //fetchQuestionBank();
   }, []);
 
-  //fetch Question bank and questions based on sectior id 
-  const token = localStorage.getItem("persist:client");
-  const parsedData = JSON.parse(token);
-  const userToken = parsedData && parsedData.client ? JSON.parse(parsedData.client)?.authentication?.accessToken : null;
-  const fetchQuestionBank = async () => {
+
+  const fetchFilterQuestionBank = async () => {
     try {
       // Make an API request using axios
-      const response = await axios.get("http://localhost:4000/api/v1/analytics/questionAnalytics/66867238c57456d8ba93a6d9", {
-        headers: {
-          'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
-        },
-      });
-
-      // Update the state with the fetched data
-      //console.log(response)
-      setQuestionData(response.data.result);
-
+      const response =
+        await dispatch(reqFetchQuestionAnalyticsRecord(
+          {
+            id: selectedSector,
+            startDate: startdate,
+            endDate: enddate
+          }
+        ))
+        if(response.payload.result.length === 0){
+          
+          toast.warning('Not Existing Infromaion ')
+        }
+      setQuestionData(response.payload.result);
     } catch (error) {
       console.error('Error fetching question data:', error);
-
-
     }
   };
 
@@ -169,7 +87,10 @@ const QuestionBankAnalytics = () => {
                 <label htmlFor="sectorType" className="form-label mb-2">
                   Sector Question Bank
                 </label>
-                <select className="form-select">
+                <select className="form-select"
+
+                  value={selectedSector}
+                  onChange={(e) => setSelectedSector(e.target.value)}>
                   <option value="">All</option>
                   {sectorDropDown?.map((item) => {
                     return (
@@ -209,8 +130,7 @@ const QuestionBankAnalytics = () => {
             </div>
             <div className="col-lg-2 mb-lg-0 mb-4">
               <button type="button" className="delete-btn me-3"
-
-                onClick={() => sortDatewise(startdate, enddate)}
+                onClick={fetchFilterQuestionBank}
               >Check Details</button>
             </div>
           </div>
@@ -230,7 +150,8 @@ const QuestionBankAnalytics = () => {
                   <div className="col-6">
                     <div className="right-side-area text-end">
                       <div className="number mb-4" style={{ borderColor: "#F37321" }}>
-                        <h4>{batchCount}</h4>
+                        {/* <h4>{batchCount||0}</h4> */}
+                        <h4>0</h4>
                       </div>
                       <div className="text">
                         <h5>Total Batches Assessed</h5>
@@ -253,7 +174,8 @@ const QuestionBankAnalytics = () => {
                   <div className="col-6">
                     <div className="right-side-area text-end">
                       <div className="number mb-4" style={{ borderColor: "#20FFBF" }}>
-                        <h4>{candidateCount}</h4>
+                        {/* <h4>{candidateCoun||0}</h4> */}
+                        <h4>0</h4>
                       </div>
                       <div className="text">
                         <h5>Total Candidates Assessed</h5>
@@ -276,7 +198,8 @@ const QuestionBankAnalytics = () => {
                   <div className="col-6">
                     <div className="right-side-area text-end">
                       <div className="number mb-4" style={{ borderColor: "#20FFBF" }}>
-                        <h4>{stateCount}</h4>
+                        {/* <h4>{stateCount||0}</h4> */}
+                        <h4>0</h4>
                       </div>
                       <div className="text">
                         <h5>Total States</h5>
@@ -299,7 +222,8 @@ const QuestionBankAnalytics = () => {
                   <div className="col-6">
                     <div className="right-side-area text-end">
                       <div className="number mb-4" style={{ borderColor: "#6B57E9" }}>
-                        <h4>{districtCount}</h4>
+                        {/* <h4>{districtCount||0}</h4> */}
+                        <h4>0</h4>
                       </div>
                       <div className="text">
                         <h5>Total Districts</h5>
@@ -344,13 +268,13 @@ const QuestionBankAnalytics = () => {
             >
               {SVGICON.PdfSvg}
             </button>
-            <CSVLink data={filterData || []} headers={spocPersonHeader} filename='sector.csv'>
+            {/* <CSVLink data={filterData || []} headers={spocPersonHeader} filename='sector.csv'>
               <button
                 type="button"
                 className="management-download-btns me-3">
                 {SVGICON.listSvg}
               </button>
-            </CSVLink>
+            </CSVLink> */}
             <button
               type="button"
               className="management-download-btns"
@@ -361,16 +285,9 @@ const QuestionBankAnalytics = () => {
         </div>
         <div className="content-management-table">
           <div className="table-responsive" ref={contentPdf}>
-            <TableComponent filterData={filterData} handleModalShow={handleModalShow} currentPage={currentPage} itemsPerPage={itemsPerPage} questionData={questionData} />
+            <TableComponent currentPage={currentPage} itemsPerPage={itemsPerPage} questionData={questionData} />
           </div>
-          {/* {filterData?.length === 0 && (
-                        <div className='text-center pt-3'>
-                            <h3 className='m-0'>Data No Found</h3>
-                        </div>
-                    )} */}
         </div>
-        {/* <StateStatusChart /> */}
-        {/* <JobRoleStatusChart /> */}
       </section>
     </>
   );

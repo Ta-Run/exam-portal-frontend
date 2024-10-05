@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { reqFetchAnalyticsRecord } from '../services/analyticsRecordServices';
+import { reqFetchAnalyticsRecord, reqFetchQuestionAnalyticsRecord } from '../services/analyticsRecordServices';
 // Async thunk for fetching analytics data
 
 
@@ -12,6 +12,8 @@ const initialState = {
     totalStates: 0,
     loading: false,
     error: null,
+    questionAnalyitcs: []
+
 }
 
 
@@ -26,7 +28,6 @@ const analyticsSlice = createSlice({
                 state.error = null; // Reset error on new fetch
             })
             .addCase(reqFetchAnalyticsRecord.fulfilled, (state, action) => {
-                console.log(action)
                 state.loading = false;
                 state.stateCount = action.payload.totalStates;
                 state.batchCount = action.payload.totalBatches;
@@ -39,6 +40,25 @@ const analyticsSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             });
+
+
+        //Question Analytics 
+
+        builder.addCase(reqFetchQuestionAnalyticsRecord.pending, (state) => {
+            state.loading = true;
+            state.error = null; // Reset error on new fetch
+        })
+        builder.addCase(reqFetchQuestionAnalyticsRecord.fulfilled, (state, action) => {
+            console.log(action)
+            state.loading = false;
+            state.questionAnalyitcs = action.payload.result;
+
+        })
+        builder.addCase(reqFetchQuestionAnalyticsRecord.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        });
+
     },
 });
 
