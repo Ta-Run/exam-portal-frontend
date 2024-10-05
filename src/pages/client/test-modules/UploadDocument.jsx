@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { reqToFetchCandidateDocumentDetails } from "../../../reduxToolkit/services/testModuleService";
+import { reqToFetchClientExamDetails } from "../../../reduxToolkit/services/uploadTestDocService";
 
 const UploadDocument = () => {
   const [candidatePhoto, setCandidatePhoto] = useState(null);
@@ -23,7 +24,7 @@ const UploadDocument = () => {
   const navigate = useNavigate();
   const id = clientDetail._id;
   const dispatch = useDispatch();
-  var headers =   {
+  var headers = {
     Authorization:
       "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiJkNjgzYjU3M2JiYmE3ODc0NjM5NTZkOWQ0NzBlODMyNTM3NjY5OWU5ZmJiMTNhZjI0MGNiOGY3ZmNiN2VhMDJhIiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc4NTEzNzEsImV4cCI6MTc1OTM4NzM3MX0.s5FHipWAP3z-5AC6h80MCamRibHSAocXp-D6R4ova2k",
   }
@@ -34,20 +35,16 @@ const UploadDocument = () => {
 
   const getClientExamDetails = async () => {
     try {
-      const data = await axios.get(
-        "http://localhost:4000/api/v1/exam/clietnDetail",
-        headers
-      );
+      const data = await dispatch(reqToFetchClientExamDetails())
 
-      if ((data.data.status = 200)) {
-        setClientDetail(data.data.data[0]);
+      if ((data.payload)) {
+        setClientDetail(data.payload.data[0]);
       }
     } catch (err) {
       console.error("Error:", err);
       setError("An error occurred: " + err.message);
     }
   };
-  console.log('cclient Details',clientDetail)
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -73,7 +70,7 @@ const UploadDocument = () => {
       : null;
 
 
-      console.log('client Detaiols',clientDetail)
+  console.log('client Detaiols', clientDetail)
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
@@ -87,14 +84,14 @@ const UploadDocument = () => {
     }
 
     formData.append("accessCode", 1234);
-     
+
     try {
-       
+
       const response = await fetch(
         "http://localhost:4000/api/v1/application/upload",
         {
           method: "POST",
-         
+
           headers,
           body: formData,
         }
@@ -255,9 +252,7 @@ const UploadDocument = () => {
                 </div>
               </div>
             </div>
-
             {error && <div className="error-message">{error}</div>}
-
             <div className="button-row">
               <button type="submit" className="start-exam-button">
                 Start Exam

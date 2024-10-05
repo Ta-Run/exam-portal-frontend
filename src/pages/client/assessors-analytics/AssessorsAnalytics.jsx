@@ -251,8 +251,8 @@ const AssessorsAnalytics = () => {
                         </div>
                     </div>
                 </div>
-                <StateStatusChart />
-                <JobRoleStatusChart />
+                {/* <StateStatusChart /> */}
+                {/* <JobRoleStatusChart /> */}
             </section>
         </>
     );

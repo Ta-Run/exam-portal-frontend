@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { useParams, useLocation } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { reqToGetQuestionsModule, reqToSubmitAnswer, reqToFetchCandidateDocumentDetails } from '../../../reduxToolkit/services/testModuleService';
+import Loader from "../../../components/loader/Loader";
 
 function TestModule() {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -13,7 +14,7 @@ function TestModule() {
     const [questions, setQuestions] = useState([]);
     const [responses, setResponses] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [imageUrl, setImageUrl] = useState([]);
+    const [imageUrl, setImageUrl] = useState(null);
     const [showPopup, setShowPopup] = useState(false); // State for popup visibility
 
     let { id } = useParams();
@@ -28,7 +29,7 @@ function TestModule() {
                 if (reduxApi.payload.data) {
                     setQuestions(reduxApi.payload.data);
                 } else {
-                    console.error('Failed to fetch questions:');
+                    console.error('Failed to fetch questions');
                 }
             } catch (error) {
                 console.error('Error fetching questions:', error);
@@ -41,7 +42,6 @@ function TestModule() {
         fetchUserImages();
     }, [dispatch, id]);
 
-    // Fetch user profile 
     const fetchUserImages = async () => {
         try {
             setLoading(true);
@@ -49,7 +49,7 @@ function TestModule() {
             if (data.payload.data) {
                 const userData = data.payload.data;
                 if (userData && userData.yourPhoto) {
-                    setImageUrl(userData.yourPhoto); // Set the preview URL
+                    setImageUrl(userData.yourPhoto);
                 }
             } else {
                 console.error('Failed to fetch user details:', data.msg);
@@ -67,7 +67,6 @@ function TestModule() {
 
         const currentQuestion = questions[selectedQuestion];
 
-        // Check if the response for the current question already exists
         const existingResponseIndex = responses.findIndex(
             (response) => response.questionId === currentQuestion._id
         );
@@ -154,88 +153,88 @@ function TestModule() {
         }
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
     return (
         <div>
-            <Header name='TestModule' />
-            <div className="test-module-container">
-                <div className='left-box'>
-                    <div className='progress-bar-container'>
-                        <p>Question {selectedQuestion + 1}/{questions.length}</p>
-                        <div className='progress-bar'>
-                            <div className='progress-bar-fill' style={{ width: `${(selectedQuestion + 1) / questions.length * 100}%` }}></div>
-                        </div>
-                    </div>
-
-                    {questions.length > 0 && (
-                        <div className='questions-section'>
-                            <p className='question-box'>{questions[selectedQuestion].question}</p>
-                            {['optionA', 'optionB', 'optionC', 'optionD'].map((optionKey, index) => (
-                                <div className='question-box' key={index} style={getOptionStyle(optionKey)}>
-                                    <input
-                                        type='radio'
-                                        id={optionKey}
-                                        name='question'
-                                        value={optionKey}
-                                        checked={selectedOption === optionKey}
-                                        onChange={handleOptionChange}
-                                    />
-                                    <label htmlFor={optionKey}>{questions[selectedQuestion][optionKey]}</label>
+            {loading ? <Loader /> : (
+                <>
+                    <Header name='TestModule' />
+                    <div className="test-module-container">
+                        <div className='left-box'>
+                            <div className='progress-bar-container'>
+                                <p>Question {selectedQuestion + 1}/{questions.length}</p>
+                                <div className='progress-bar'>
+                                    <div className='progress-bar-fill' style={{ width: `${(selectedQuestion + 1) / questions.length * 100}%` }}></div>
                                 </div>
-                            ))}
+                            </div>
+
+                            {questions.length > 0 && (
+                                <div className='questions-section'>
+                                    <p className='question-box'>{questions[selectedQuestion].question}</p>
+                                    {['optionA', 'optionB', 'optionC', 'optionD'].map((optionKey, index) => (
+                                        <div className='question-box' key={index} style={getOptionStyle(optionKey)}>
+                                            <input
+                                                type='radio'
+                                                id={optionKey}
+                                                name='question'
+                                                value={optionKey}
+                                                checked={selectedOption === optionKey}
+                                                onChange={handleOptionChange}
+                                            />
+                                            <label htmlFor={optionKey}>{questions[selectedQuestion][optionKey]}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className='button_section'>
+                                <button className='review'>Review</button>
+                                <button className='preview' onClick={handlePreviousQuestion} disabled={selectedQuestion === 0}>Previous</button>
+                                <button className='next' onClick={handleNextQuestion} disabled={selectedQuestion === questions.length - 1}>Next</button>
+                            </div>
                         </div>
-                    )}
 
-                    <div className='button_section'>
-                        <button className='review'>Review</button>
-                        <button className='preview' onClick={handlePreviousQuestion} disabled={selectedQuestion === 0}>Previous</button>
-                        <button className='next' onClick={handleNextQuestion} disabled={selectedQuestion === questions.length - 1}>Next</button>
-                    </div>
-                </div>
-
-                <div className='right-box'>
-                    <div className='logo-box'>
-                        <img src="/img/testicon/testUser.png" alt="Test" />
-                    </div>
-
-                    <span className='choose-questions'>Choose a question</span>
-
-                    <div className='questions-box'>
-                        {questions.map((_, index) => (
-                            <div className='question-number' key={index}
-                                style={selectedQuestion === index ? { backgroundColor: 'red', color: 'white' } : {}}
-                                onClick={() => handleQuestionClick(index)}>
-                                {index + 1}
+                        <div className='right-box'>
+                            <div className='logo-box'>
+                                <img src="/img/testicon/testUser.png" alt="Test" />
                             </div>
-                        ))}
-                    </div>
 
-                    <div className='submit-box'>
-                        <button className='submit-btn' onClick={handleSubmit}>Submit</button>
-                        {showPopup && (
-                            <div className="popup">
-                                <div className="thumbsup">&#128077;</div>
-                                <p style={{ color: 'black', fontSize: '16px' }}>Submitted Successfully!</p>
-                                <p style={{ color: 'black', fontSize: '14px' }}>You can close the window now!</p>
-                                <div className="ok-box" onClick={closePopup}>OK</div>
+                            <span className='choose-questions'>Choose a question</span>
+
+                            <div className='questions-box'>
+                                {questions.map((_, index) => (
+                                    <div className='question-number' key={index}
+                                        style={selectedQuestion === index ? { backgroundColor: 'red', color: 'white' } : {}}
+                                        onClick={() => handleQuestionClick(index)}>
+                                        {index + 1}
+                                    </div>
+                                ))}
                             </div>
-                        )}
-                    </div>
 
-                    <div className='image-box'>
-                        <img
-                            src={imageUrl && imageUrl
-                                ? `http://localhost:4000${imageUrl}`
-                                : "/img/testicon/Mask_group.png"}
-                            alt="User"
-                            height={200}
-                        />
+                            <div className='submit-box'>
+                                <button className='submit-btn' onClick={handleSubmit}>Submit</button>
+                                {showPopup && (
+                                    <div className="popup">
+                                        <div className="thumbsup">&#128077;</div>
+                                        <p style={{ color: 'black', fontSize: '16px' }}>Submitted Successfully!</p>
+                                        <p style={{ color: 'black', fontSize: '14px' }}>You can close the window now!</p>
+                                        <div className="ok-box" onClick={closePopup}>OK</div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className='image-box'>
+                                <img
+                                    src={imageUrl
+                                        ? `http://localhost:4000${imageUrl}`
+                                        : "/img/testicon/Mask_group.png"}
+                                    alt="User"
+                                    height={200}
+                                />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </>
+            )}
         </div>
     );
 }

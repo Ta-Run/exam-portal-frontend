@@ -39,21 +39,21 @@ export const reqToFetchCandidateDocumentDetails = createAsyncThunk("reqToFetchCa
     }
 })
 
-//get exam details of client by cliend id 
-export const reqToFetchClientExamDetails = createAsyncThunk("reqToFetchClientExamDetails", async (data) => {
+// //get exam details of client by cliend id 
+// export const reqToFetchClientExamDetails = createAsyncThunk("reqToFetchClientExamDetails", async (data) => {
 
-    try {
-        const response = await Axios.get(`${apiendpoints.getExamClientDeatails}`, authCommonHeader());
+//     try {
+//         const response = await Axios.get(`${apiendpoints.getExamClientDeatails}`, authCommonHeader());
 
-        if (response.data.res) {
-            return response.data;
-        } else {
-            toast.error(response.data.msg);
-        }
-    } catch (error) {
-        console.log(error);
-    }
-})
+//         if (response.data.res) {
+//             return response.data;
+//         } else {
+//             toast.error(response.data.msg);
+//         }
+//     } catch (error) {
+//         console.log(error);
+//     }
+// })
 
 
 //get exam details of client by cliend id 

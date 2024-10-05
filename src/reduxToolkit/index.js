@@ -14,7 +14,13 @@ import spocPersonAuthReducer from "./slice/spocPersonAuthSlice";
 // Child user Imports
 import childUserAuthReducer from "./slice/childUserAuthSlice";
 //test reducer import 
-import testMouleReducer from './slice/testModuleSlice';
+import testMoudleReducer from './slice/testModuleSlice';
+//Analytics Record Reducer Import
+import AnalyticsReducer from './slice/analyticsRecordSlice'
+
+
+//UploadTestDocSlice
+import UploadTestDocReducer from './slice/uploadTestDocSlice'
 
 const getConfig = (key, whitelist) => {
     const persistConfig = {
@@ -38,8 +44,15 @@ const reducer = combineReducers({
     // Child User
     childUser: persistReducer(getConfig("childUser", ["childUser"]), childUserAuthReducer),
     // Test Attempt
-    childUser: persistReducer(getConfig("childUser", ["childUser"]), testMouleReducer)
+    testModule: persistReducer(getConfig("childUser", ["childUser"]), testMoudleReducer),
+
+    // Analytics Record Reducer
+    AnalyticsMangement: persistReducer(getConfig("childUser", ["childUser"]), AnalyticsReducer),
+    //UploadTestDocSlice
+    UploadTestDocument: persistReducer(getConfig("childUser", ["childUser"]), UploadTestDocReducer)
 })
+
+
 
 const store = configureStore({
     reducer,

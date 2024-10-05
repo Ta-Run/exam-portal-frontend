@@ -1,100 +1,60 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CSVLink } from "react-csv";
-
-
 import Header from "../../../components/header/admin/Header";
-import Pagination from "../../../components/pagination/Pagination";
 import Loader from "../../../components/loader/Loader";
-import { ManageBatchHeader } from "../../../constants/header";
-import DeleteModal from "../../../components/modal/delete/DeleteModal";
-import AddManageBatch from "../../../components/offcanvas/manage-batch/AddManageBatch";
-import EditManageBatch from './../../../components/offcanvas/manage-batch/EditManageBatch';
-import { reqToDeleteClientManageBatch, reqToGetClientManageBatch } from "../../../reduxToolkit/services/assessmentServices";
-import { useDisablePrevDate } from "../../../hooks/useDisablePrevDate";
-import { Link } from "react-router-dom";
-import { reqToGetBatchDropDown, reqToGetClientJobRoleDropDown, reqToGetSectorDropDown } from "../../../reduxToolkit/services/contentManagementServices";
+import { reqToGetSectorDropDown } from "../../../reduxToolkit/services/contentManagementServices";
+import { reqFetchAnalyticsRecord } from "../../../reduxToolkit/services/analyticsRecordServices.jsx";
+import StateStatusChart from "../assessors-analytics/StateStatusChart.jsx";
+import JobRoleStatusChart from "../assessors-analytics/JobRoleStatusChart.jsx";
 
 const SectorsAnalytics = () => {
     const dispatch = useDispatch();
 
     // Selectors
-    const assessmentReducer = useSelector((state) => state.assessment);
-    const { loader, clientManageBatch, clientManageBatchPagination } = assessmentReducer;
-
+    const analyticsRecordsReducer = useSelector((state) => state.AnalyticsMangement);
     const contentManagementReducer = useSelector((state) => state.contentManagement);
-    const { sectorDropDown, clientJobRoleDropDown, clientBatchDropDown } = contentManagementReducer;
 
-    // useRef
-    const contentPdf = useRef();
+    const { sectorDropDown } = contentManagementReducer;
+    const { stateCount, batchCount, districtCount, candidateCount, jobRoleStatus, stateBatchStatus } = analyticsRecordsReducer;
 
     // States
-    const [modalShow, setModalShow] = useState({
-        show: false,
-        editShow: false,
-        deleteShow: false,
-    });
-    const [id, setId] = useState(null);
-    const [editData, setEditData] = useState({});
-    const [searchTerm, setSearchTerm] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [selectedSector, setSelectedSector] = useState("");
+    const [fromDate, setFromDate] = useState("");
+    const [toDate, setToDate] = useState("");
+    const [filterApplied, setFilterApplied] = useState(false);
 
-    // handleModalShow
-    const handleModalShow = (type, data = null) => {
-        setModalShow({ ...modalShow, [type]: true });
-        if (type === "editShow") setEditData(data);
-        if (type === "deleteShow") setId(data);
+    // Handle sector dropdown change
+    const handleSectorChange = (e) => {
+        setSelectedSector(e.target.value);
     };
 
-    // handleModalClose
-    const handleModalClose = () => {
-        setModalShow({
-            show: false,
-            editShow: false,
-            deleteShow: false,
-        });
+    // Handle date range change
+    const handleDateChange = (type, value) => {
+        if (type === "from") {
+            setFromDate(value);
+        } else if (type === "to") {
+            setToDate(value);
+        }
     };
 
-    // handleGetManageBatch
-    const handleGetManageBatch = async () => {
-        await dispatch(reqToGetClientManageBatch({ page: currentPage, limit: itemsPerPage }));
-    }
-
-    // handleDelete
-    const handleDelete = async () => {
-        await dispatch(reqToDeleteClientManageBatch(id));
-        handleGetManageBatch();
-        handleModalClose();
+    // Fetch analytics record based on sector and date filter
+    const handleFilterSubmit = () => {
+        const sectorId = selectedSector || ""; // Pass empty if no sector selected
+        dispatch(reqFetchAnalyticsRecord({
+            sectorId,
+            from: fromDate,
+            to: toDate,
+        }));
+        setFilterApplied(true); // To track whether filter is applied
     };
 
-    // Filter Data
-    const filterData = useMemo(() => clientManageBatch?.filter((item) => {
-        return (
-            item?._id?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-            item?.BatchCode?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-            item?.TrainingPartnerName?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-            item?.TrainingCenterName?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-            item?.state?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
-            item?.district?.toLowerCase()?.includes(searchTerm.toLowerCase())
-        );
-    }), [clientManageBatch, searchTerm]);
-
-    // Get Manage Candidate Data
-    useEffect(() => {
-        handleGetManageBatch();
-    }, [dispatch, currentPage, itemsPerPage]);
-
-    // Get Sector & Job Role Dropdown
+    // Get Sector Dropdown on component mount
     useEffect(() => {
         dispatch(reqToGetSectorDropDown());
-        dispatch(reqToGetClientJobRoleDropDown());
-        dispatch(reqToGetBatchDropDown());
-    }, []);
+    }, [dispatch]);
 
     return (
         <>
-            {/* {loader && <Loader />} */}
             <Header name="Assessment" />
             <section className="assessors-analytics-section">
                 <h2 className="main-title">Sector Status</h2>
@@ -105,137 +65,165 @@ const SectorsAnalytics = () => {
                                 <label htmlFor="sectorType" className="form-label mb-2">
                                     Sector
                                 </label>
-                                <select className="form-select">
+                                <select
+                                    className="form-select"
+                                    value={selectedSector}
+                                    onChange={handleSectorChange}
+                                >
                                     <option value="">All</option>
-                                    {sectorDropDown?.map((item) => {
-                                        return (
-                                            <option value={item?._id} key={item?._id}>
-                                                {item?.name}
-                                            </option>
-                                        );
-                                    })}
+                                    {sectorDropDown?.map((item) => (
+                                        <option value={item?._id} key={item?._id}>
+                                            {item?.name}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
                         <div className="col-lg-3 mb-lg-0 mb-4">
                             <div className="sector-selector">
-                                <label htmlFor="District" className="form-label mb-2">
+                                <label htmlFor="fromDate" className="form-label mb-2">
                                     From Date
                                 </label>
-                                <input type="date" className="form-date-select" />
+                                <input
+                                    type="date"
+                                    className="form-date-select"
+                                    value={fromDate}
+                                    onChange={(e) => handleDateChange("from", e.target.value)}
+                                />
                             </div>
                         </div>
                         <div className="col-lg-3 mb-lg-0 mb-4">
                             <div className="sector-selector">
-                                <label htmlFor="District" className="form-label mb-2">
+                                <label htmlFor="toDate" className="form-label mb-2">
                                     To Date
                                 </label>
-                                <input type="date" className="form-date-select" />
+                                <input
+                                    type="date"
+                                    className="form-date-select"
+                                    value={toDate}
+                                    onChange={(e) => handleDateChange("to", e.target.value)}
+                                />
                             </div>
                         </div>
                         <div className="col-lg-2 mb-lg-0 mb-4">
-                            <button type="button" className="delete-btn me-3">Check Details</button>
+                            <button
+                                type="button"
+                                className="delete-btn me-3"
+                                onClick={handleFilterSubmit}
+                            >
+                                Check Details
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div className="top-cards-wrapper justify-content-between">
-                    <div className="row">
-                        <div className="col-xxl-3 col-md-4 col-sm-6 mb-4">
-                            <div className="card-area" style={{ backgroundColor: "#FEEDE2" }}>
-                                <div className="row align-items-center">
-                                    <div className="col-6">
-                                        <div className="left-side-area">
-                                            <div className="icon mb-4">
-                                                <img src="/img/dashboard/dashboard-icon-1.svg" alt="Sector" className='img-fluid' />
+
+                {filterApplied && ( // Only show the charts if filter is applied
+                    <>
+                        <div className="top-cards-wrapper justify-content-between">
+                            <div className="row">
+                                <div className="col-xxl-3 col-md-4 col-sm-6 mb-4">
+                                    <div className="card-area" style={{ backgroundColor: "#FEEDE2" }}>
+                                        <div className="row align-items-center">
+                                            <div className="col-6">
+                                                <div className="left-side-area">
+                                                    <div className="icon mb-4">
+                                                        <img src="/img/dashboard/dashboard-icon-1.svg" alt="Sector" className='img-fluid' />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-6">
+                                                <div className="right-side-area text-end">
+                                                    <div className="number mb-4" style={{ borderColor: "#F37321" }}>
+                                                        <h4>{batchCount}</h4>
+                                                    </div>
+                                                    <div className="text">
+                                                        <h5>Total Batches Assessed</h5>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-6">
-                                        <div className="right-side-area text-end">
-                                            <div className="number mb-4" style={{ borderColor: "#F37321" }}>
-                                                <h4>2</h4>
+                                </div>
+                                <div className="col-xxl-3 col-md-4 col-sm-6 mb-4">
+                                    <div className="card-area" style={{ backgroundColor: "#E2FEF6" }}>
+                                        <div className="row align-items-center">
+                                            <div className="col-6">
+                                                <div className="left-side-area">
+                                                    <div className="icon mb-4">
+                                                        <img src="/img/dashboard/dashboard-icon-2.svg" alt="Registered Assessor" className='img-fluid' />
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="text">
-                                                <h5>Total Batches Assessed</h5>
+                                            <div className="col-6">
+                                                <div className="right-side-area text-end">
+                                                    <div className="number mb-4" style={{ borderColor: "#20FFBF" }}>
+                                                        <h4>{candidateCount}</h4>
+                                                    </div>
+                                                    <div className="text">
+                                                        <h5>Total Candidates Assessed</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-xxl-3 col-md-4 col-sm-6 mb-4">
+                                    <div className="card-area" style={{ backgroundColor: "#E2FCFE" }}>
+                                        <div className="row align-items-center">
+                                            <div className="col-6">
+                                                <div className="left-side-area">
+                                                    <div className="icon mb-4">
+                                                        <img src="/img/dashboard/dashboard-icon-3.svg" alt="Candidates Enrolled" className='img-fluid' />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-6">
+                                                <div className="right-side-area text-end">
+                                                    <div className="number mb-4" style={{ borderColor: "#20FBF" }}>
+                                                        <h4>{stateCount}</h4>
+                                                    </div>
+                                                    <div className="text">
+                                                        <h5>Total States</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-xxl-3 col-md-4 col-sm-6 mb-4">
+                                    <div className="card-area" style={{ backgroundColor: "#D5DFF4" }}>
+                                        <div className="row align-items-center">
+                                            <div className="col-6">
+                                                <div className="left-side-area">
+                                                    <div className="icon mb-4">
+                                                        <img src="/img/dashboard/dashboard-icon-4.svg" alt="Candidates Assessed" className='img-fluid' />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-6">
+                                                <div className="right-side-area text-end">
+                                                    <div className="number mb-4" style={{ borderColor: "#6B57E9" }}>
+                                                        <h4>{districtCount}</h4>
+                                                    </div>
+                                                    <div className="text">
+                                                        <h5>Total Districts</h5>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="col-xxl-3 col-md-4 col-sm-6 mb-4">
-                            <div className="card-area" style={{ backgroundColor: "#E2FEF6" }}>
-                                <div className="row align-items-center">
-                                    <div className="col-6">
-                                        <div className="left-side-area">
-                                            <div className="icon mb-4">
-                                                <img src="/img/dashboard/dashboard-icon-2.svg" alt="Registered Assessor" className='img-fluid' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-6">
-                                        <div className="right-side-area text-end">
-                                            <div className="number mb-4" style={{ borderColor: "#20FFBF" }}>
-                                                <h4>9</h4>
-                                            </div>
-                                            <div className="text">
-                                                <h5>Total Candidates Assessed</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+                        <div className="chart-wrapper mb-4">
+                            <StateStatusChart stateBatchStatus={stateBatchStatus} />
                         </div>
-                        <div className="col-xxl-3 col-md-4 col-sm-6 mb-4">
-                            <div className="card-area" style={{ backgroundColor: "#E2FCFE" }}>
-                                <div className="row align-items-center">
-                                    <div className="col-6">
-                                        <div className="left-side-area">
-                                            <div className="icon mb-4">
-                                                <img src="/img/dashboard/dashboard-icon-3.svg" alt="Candidates Enrolled" className='img-fluid' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-6">
-                                        <div className="right-side-area text-end">
-                                            <div className="number mb-4" style={{ borderColor: "#20FFBF" }}>
-                                                <h4>650</h4>
-                                            </div>
-                                            <div className="text">
-                                                <h5>Total States</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className="chart-wrapper">
+                            <JobRoleStatusChart jobRoleStatus={jobRoleStatus} />
                         </div>
-                        <div className="col-xxl-3 col-md-4 col-sm-6 mb-4">
-                            <div className="card-area" style={{ backgroundColor: "#D5DFF4" }}>
-                                <div className="row align-items-center">
-                                    <div className="col-6">
-                                        <div className="left-side-area">
-                                            <div className="icon mb-4">
-                                                <img src="/img/dashboard/dashboard-icon-4.svg" alt="Candidates Assessed" className='img-fluid' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-6">
-                                        <div className="right-side-area text-end">
-                                            <div className="number mb-4" style={{ borderColor: "#6B57E9" }}>
-                                                <h4>650</h4>
-                                            </div>
-                                            <div className="text">
-                                                <h5>Total Districts</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {/* <StateStatusChart /> */}
-                {/* <JobRoleStatusChart /> */}
+                    </>
+                )}
             </section>
         </>
     );

@@ -29,6 +29,12 @@ const QuestionBankAnalytics = () => {
   const contentManagementReducer = useSelector((state) => state.contentManagement);
   const { sectorDropDown, clientJobRoleDropDown, clientBatchDropDown } = contentManagementReducer;
 
+
+  const analyticsRecordsReducer = useSelector((state) => state.AnalyticsMangement);
+
+  const { stateCount, batchCount, districtCount, candidateCount, jobRoleStatus, stateBatchStatus } = analyticsRecordsReducer
+
+
   // useRef
   const contentPdf = useRef();
 
@@ -91,15 +97,15 @@ const QuestionBankAnalytics = () => {
           endDate: edate
         }
       });
-  
+
       // Update the state with the fetched data
       setQuestionData(response.data.result);
-     
+
     } catch (error) {
       console.error('Error fetching question data:', error);
     }
   }
-  
+
   // Filter Data
   const filterData = useMemo(() => clientManageBatch?.filter((item) => {
     return (
@@ -135,18 +141,18 @@ const QuestionBankAnalytics = () => {
       // Make an API request using axios
       const response = await axios.get("http://localhost:4000/api/v1/analytics/questionAnalytics/66867238c57456d8ba93a6d9", {
         headers: {
-            'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
+          'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjgzN2IwZDI3Njk4NjY5YTAwNzA2MzEiLCJqdGkiOiI1MDEwODU1M2MyOTc5NmExNjkzYjUzYThiMDFjYzI3NjNiNDkyNGJkZTQ0MTMwODM3ZWYwNGMxOTQxMzQ2MTM1IiwiZW1haWwiOiJkYXhpdEBnbWFpbC5jb20iLCJsb2dpblR5cGUiOiJDbGllbnQiLCJpYXQiOjE3Mjc0MjAyMDUsImV4cCI6MTc1ODk1NjIwNX0.tubXZKzJkl13iwuPfJG-bqDX-xndJUR94TPUPi5LjtU"
         },
-    });
+      });
 
       // Update the state with the fetched data
       //console.log(response)
       setQuestionData(response.data.result);
-   
+
     } catch (error) {
       console.error('Error fetching question data:', error);
-  
-   
+
+
     }
   };
 
@@ -183,9 +189,9 @@ const QuestionBankAnalytics = () => {
                 </label>
                 <input type="date"
                   value={startdate}
-                  onChange={(e)=>setstartdate(e.target.value)}
-                 className="form-date-select"
-                 />
+                  onChange={(e) => setstartdate(e.target.value)}
+                  className="form-date-select"
+                />
               </div>
             </div>
             <div className="col-lg-3 mb-lg-0 mb-4">
@@ -194,17 +200,17 @@ const QuestionBankAnalytics = () => {
                   To Date
                 </label>
                 <input type="date"
-            value={enddate}
-            onChange={(e)=>setenddate(e.target.value)}
-                 className="form-date-select" 
-              
-                 />
+                  value={enddate}
+                  onChange={(e) => setenddate(e.target.value)}
+                  className="form-date-select"
+
+                />
               </div>
             </div>
             <div className="col-lg-2 mb-lg-0 mb-4">
               <button type="button" className="delete-btn me-3"
 
-              onClick={()=>sortDatewise(startdate,enddate)}
+                onClick={() => sortDatewise(startdate, enddate)}
               >Check Details</button>
             </div>
           </div>
@@ -224,7 +230,7 @@ const QuestionBankAnalytics = () => {
                   <div className="col-6">
                     <div className="right-side-area text-end">
                       <div className="number mb-4" style={{ borderColor: "#F37321" }}>
-                        <h4>2</h4>
+                        <h4>{batchCount}</h4>
                       </div>
                       <div className="text">
                         <h5>Total Batches Assessed</h5>
@@ -247,7 +253,7 @@ const QuestionBankAnalytics = () => {
                   <div className="col-6">
                     <div className="right-side-area text-end">
                       <div className="number mb-4" style={{ borderColor: "#20FFBF" }}>
-                        <h4>9</h4>
+                        <h4>{candidateCount}</h4>
                       </div>
                       <div className="text">
                         <h5>Total Candidates Assessed</h5>
@@ -270,7 +276,7 @@ const QuestionBankAnalytics = () => {
                   <div className="col-6">
                     <div className="right-side-area text-end">
                       <div className="number mb-4" style={{ borderColor: "#20FFBF" }}>
-                        <h4>650</h4>
+                        <h4>{stateCount}</h4>
                       </div>
                       <div className="text">
                         <h5>Total States</h5>
@@ -293,7 +299,7 @@ const QuestionBankAnalytics = () => {
                   <div className="col-6">
                     <div className="right-side-area text-end">
                       <div className="number mb-4" style={{ borderColor: "#6B57E9" }}>
-                        <h4>650</h4>
+                        <h4>{districtCount}</h4>
                       </div>
                       <div className="text">
                         <h5>Total Districts</h5>
@@ -355,7 +361,7 @@ const QuestionBankAnalytics = () => {
         </div>
         <div className="content-management-table">
           <div className="table-responsive" ref={contentPdf}>
-            <TableComponent filterData={filterData} handleModalShow={handleModalShow} currentPage={currentPage} itemsPerPage={itemsPerPage}  questionData={questionData} />
+            <TableComponent filterData={filterData} handleModalShow={handleModalShow} currentPage={currentPage} itemsPerPage={itemsPerPage} questionData={questionData} />
           </div>
           {/* {filterData?.length === 0 && (
                         <div className='text-center pt-3'>

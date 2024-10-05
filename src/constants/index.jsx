@@ -132,12 +132,19 @@ export const apiendpoints = {
     childUserLogin: "/child-user/login",
     childUserLogOut: "/child-user/logout",
 
-    
+
     //? ***************** Test Module *****************
-    getTestModuleQuestion : "/question/:id",
-    getCondidateDocument:"/exam/get-document/:id",
-    getExamClientDeatails :"/exam/clietnDetail",
-    submitExamAnswer :"/exam/submit-exam"
+    getTestModuleQuestion: "/question/:id",
+    getCondidateDocument: "/exam/get-document/:id",
+    submitExamAnswer: "/exam/submit-exam",
+
+
+    //**********Upload Test Document ***********/
+    getExamClientDeatails: "/exam/clietnDetail",
+    uploadExamClientDoc:"/application/upload",
+
+        //   ***************** AnalyticsRecord Reports *****************
+    getAnalyticsRecordsReport: "analytics/analyticReports/:id",
 }
 
 export const messages = {

@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-import { reqToFetchCandidateDocumentDetails ,reqToSubmitAnswer,reqToGetQuestionsModule} from "../services/testModuleService";
+import { reqToFetchCandidateDocumentDetails, reqToSubmitAnswer, reqToGetQuestionsModule } from "../services/testModuleService";
 
 const initialState = {
     loader: false,
@@ -25,9 +24,9 @@ const testModuleSlice = createSlice({
             state.loader = false;
             state.error = action.payload;
         })
-       
-         //reqToFetchExamUserDetails
-         builder.addCase(reqToFetchCandidateDocumentDetails.pending, (state) => {
+
+        //reqToFetchExamUserDetails
+        builder.addCase(reqToFetchCandidateDocumentDetails.pending, (state) => {
             state.loader = true;
         })
         builder.addCase(reqToFetchCandidateDocumentDetails.fulfilled, (state, action) => {
@@ -40,12 +39,12 @@ const testModuleSlice = createSlice({
         })
 
         //req to submit exam answer 
-         //reqToFetchExamUserDetails
-         builder.addCase(reqToSubmitAnswer.pending, (state) => {
+        //reqToFetchExamUserDetails
+        builder.addCase(reqToSubmitAnswer.pending, (state) => {
             state.loader = true;
         })
         builder.addCase(reqToSubmitAnswer.fulfilled, (state, action) => {
-            console.log('actionss',action)
+            
             state.loader = false;
             state.spocPerson = action.payload;
         })
@@ -55,7 +54,6 @@ const testModuleSlice = createSlice({
         })
     }
 
-    
 })
 
 export default testModuleSlice.reducer;

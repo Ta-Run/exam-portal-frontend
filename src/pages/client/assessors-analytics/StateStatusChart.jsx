@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
@@ -12,30 +12,48 @@ export const options = {
         },
         title: {
             display: true,
+            text: 'State Status',
         },
     },
 };
 
-const labels = ['ANDAMAN AND NICOBAR ISLANDS', 'ANDHRA PRADESH', 'ARUNACHAL PRADESH', 'ASSAM', 'BIHAR', 'CHANDIGARH', 'CHATTISGARH', 'DADRA AND NAGAR HAVELI', "DAMAN AND DIU", "DELHI", "GOA", "GUJARAT", "HARYANA", "HIMACHAL PRADESH", "JAMMU AND KASHMIR", "JHARKHAND", "KARNATAKA", "KERALA", "LAKSHADWEEP", "MADHYA PRADESH", "MAHARASHTRA", "MANIPUR", "MEGHALAYA", "MIZORM", "NAGALAND", "ODISHA", "PUDUCHERRY", "PUNJAB", "RAJASTHAN", "SIKKIM", "TAMIL NADU", "TELANGANA", "TRIPURA", "UTTAR PRADESH", "UTTRAKHAND", "WEST BENGAL"];
+const colors = [
+    'rgba(255, 99, 132, 0.5)', // Red
+    'rgba(54, 162, 235, 0.5)', // Blue
+    'rgba(255, 206, 86, 0.5)', // Yellow
+    'rgba(75, 192, 192, 0.5)', // Teal
+    'rgba(153, 102, 255, 0.5)', // Purple
+    'rgba(255, 159, 64, 0.5)', // Orange
+];
 
-export const data = {
-    labels,
-    datasets: [
-        {
-            label: 'Batch Count',
-            data: [4],
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        }
-    ],
-};
+const StateStatusChart = ({ stateBatchStatus }) => {
+    console.log('stateBatchStatus', stateBatchStatus);
 
-const StateStatusChart = () => {
-    return <div className='state-status-chart-area'>
-        <div className="top-text">
-            <h5>State Status</h5>
+    const labels = stateBatchStatus.map(state => state.state);
+    const dataValues = stateBatchStatus.map(state => state.stateCount);
+
+    // Map colors to the data set based on the number of states
+    const backgroundColors = stateBatchStatus.map((_, index) => colors[index % colors.length]);
+
+    const data = {
+        labels,
+        datasets: [
+            {
+                label: 'Batch Count',
+                data: dataValues,
+                backgroundColor: backgroundColors,
+            },
+        ],
+    };
+
+    return (
+        <div className='state-status-chart-area'>
+            <div className="top-text">
+                <h5>State Status</h5>
+            </div>
+            <Bar options={options} data={data} className='bar-chart' />
         </div>
-        <Bar options={options} data={data} className='bar-chart' />
-    </div>;
+    );
 }
 
-export default StateStatusChart
+export default StateStatusChart;
