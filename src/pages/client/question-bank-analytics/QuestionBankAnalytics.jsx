@@ -43,6 +43,12 @@ const QuestionBankAnalytics = () => {
   // Fetch Filtered Question Bank Data
   const fetchFilterQuestionBank = async () => {
     try {
+
+      if (!selectedSector && !startdate && !enddate) {
+        toast.warning("Please choose at least one filter option");
+        return; // Exit the function if no filter is selected
+      }
+    
       const response = await dispatch(
         reqFetchQuestionAnalyticsRecord({
           id: selectedSector, // Using selected sector ID

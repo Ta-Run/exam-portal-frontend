@@ -7,6 +7,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { reqToGetQuestionsModule, reqToSubmitAnswer, reqToFetchCandidateDocumentDetails } from '../../../reduxToolkit/services/testModuleService';
 import Loader from "../../../components/loader/Loader";
+import { useNavigate } from "react-router-dom";
 
 function TestModule() {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -21,6 +22,7 @@ function TestModule() {
     const dispatch = useDispatch();
     const location = useLocation();
     const clientId = location.state || {};
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchQuestions = async () => {
@@ -106,6 +108,8 @@ function TestModule() {
                     Authorization: `Bearer ${userToken}`
                 },
             });
+            
+            
 
             if (answerResponse) {
                 toast.success('Submitted answer');
@@ -113,7 +117,14 @@ function TestModule() {
                 setSelectedOption(null);
                 setResponses([]);
                 setSelectedQuestion(0);
+
             }
+
+            if(answerResponse.status === 200)   {
+                console.log('submit-exam',answerResponse.status)
+                console.log('exam submit succesfully')
+                navigate('/client/test-modules/UploadDocument');
+             }
         } catch (error) {
             console.error('Error submitting exam:', error);
         }
