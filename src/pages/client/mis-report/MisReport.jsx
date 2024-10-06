@@ -15,6 +15,7 @@ import AddManageBatch from "../../../components/offcanvas/manage-batch/AddManage
 import EditManageBatch from './../../../components/offcanvas/manage-batch/EditManageBatch';
 import { reqToDeleteClientManageBatch, reqToGetClientManageBatch } from "../../../reduxToolkit/services/assessmentServices";
 import { useDisablePrevDate } from "../../../hooks/useDisablePrevDate";
+import { clientReportModule } from "../../../reduxToolkit/services/reportServices"; 
 
 const MisReport = () => {
     const dispatch = useDispatch();
@@ -91,7 +92,11 @@ const MisReport = () => {
         dispatch(reqToGetSectorDropDown());
         dispatch(reqToGetClientJobRoleDropDown());
         dispatch(reqToGetBatchDropDown());
+        dispatch(clientReportModule());
+        
     }, []);
+
+    
 
     // Change page
     const paginate = (pageNumber) => setCurrentPage(pageNumber);

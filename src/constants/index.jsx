@@ -147,7 +147,12 @@ export const apiendpoints = {
     getAnalyticsRecordsReport: "analytics/analyticReports/:id",
     getQuestionAnalyticsRecordsReport: "analytics/questionAnalytics/:id",
     getQuesitonBankDropDown  : "question-bank/drop-down",
-    getAssessorDropDown: "assessor/drop-down/:id"
+    getAssessorDropDown: "assessor/drop-down/:id",
+
+
+    //>>>>>>>>>>>>>>>>>>>>> mis- Report >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+   getclientReportModule: "reports/getMisReports",
+
 }
 
 export const messages = {

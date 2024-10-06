@@ -17,6 +17,7 @@ import childUserAuthReducer from "./slice/childUserAuthSlice";
 import testMoudleReducer from './slice/testModuleSlice';
 //Analytics Record Reducer Import
 import AnalyticsReducer from './slice/analyticsRecordSlice'
+import reportSliceReducer from './slice/reportSlice'
 
 
 //UploadTestDocSlice
@@ -49,7 +50,10 @@ const reducer = combineReducers({
     // Analytics Record Reducer
     AnalyticsMangement: persistReducer(getConfig("childUser", ["childUser"]), AnalyticsReducer),
     //UploadTestDocSlice
-    UploadTestDocument: persistReducer(getConfig("childUser", ["childUser"]), UploadTestDocReducer)
+    UploadTestDocument: persistReducer(getConfig("childUser", ["childUser"]), UploadTestDocReducer),
+
+    // report slice 
+    reportSliceReducer : persistReducer(getConfig("childUser", ["childUser"]),reportSliceReducer)
 })
 
 
