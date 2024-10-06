@@ -29,11 +29,11 @@ const colors = [
 const StateStatusChart = ({ stateBatchStatus }) => {
     console.log('stateBatchStatus', stateBatchStatus);
 
-    const labels = stateBatchStatus.map(state => state.state);
-    const dataValues = stateBatchStatus.map(state => state.stateCount);
+    const labels = stateBatchStatus&&stateBatchStatus.map(state => state.state);
+    const dataValues =stateBatchStatus&& stateBatchStatus.map(state => state.stateCount);
 
     // Map colors to the data set based on the number of states
-    const backgroundColors = stateBatchStatus.map((_, index) => colors[index % colors.length]);
+    const backgroundColors = stateBatchStatus&&stateBatchStatus.map((_, index) => colors[index % colors.length]);
 
     const data = {
         labels,

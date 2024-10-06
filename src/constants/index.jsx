@@ -146,6 +146,8 @@ export const apiendpoints = {
         //   ***************** AnalyticsRecord Reports *****************
     getAnalyticsRecordsReport: "analytics/analyticReports/:id",
     getQuestionAnalyticsRecordsReport: "analytics/questionAnalytics/:id",
+    getQuesitonBankDropDown  : "question-bank/drop-down",
+    getAssessorDropDown: "assessor/drop-down/:id"
 }
 
 export const messages = {

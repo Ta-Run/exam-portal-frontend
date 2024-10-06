@@ -6,8 +6,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const JobRoleStatusChart = ({ jobRoleStatus }) => {
     // Extracting labels and data from jobRoleStatus
-    const labels = jobRoleStatus.map(role => role.jobRole);
-    const dataValues = jobRoleStatus.map(role => role.jobRoleCount);
+    const labels = jobRoleStatus && jobRoleStatus.map(role => role.jobRole);
+    const dataValues = jobRoleStatus && jobRoleStatus.map(role => role.jobRoleCount);
 
     const data = {
         labels: labels,
@@ -39,7 +39,7 @@ const JobRoleStatusChart = ({ jobRoleStatus }) => {
     const options = {
         responsive: true,
     };
-;
+    ;
     return (
         <div className='jobrole-status-chart-area'>
             <div className="top-text">

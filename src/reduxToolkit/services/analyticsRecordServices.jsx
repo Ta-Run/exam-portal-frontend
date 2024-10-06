@@ -50,3 +50,46 @@ export const reqFetchQuestionAnalyticsRecord = createAsyncThunk("reqFetchQuestio
         toast.error("Failed to fetch analytics records. Please try again.");
     }
 });
+
+export const reqFetchQuestionDropDown = createAsyncThunk("reqFetchQuestionDropDown", async (data) => {
+    try {
+        
+       
+        const url = `${apiendpoints.getQuesitonBankDropDown}`;
+
+        const response = await Axios.get(url, authCommonHeader());
+
+        // Check if response contains data
+        if (response.data) {
+            return response.data;  // Return the data to be handled in Redux
+        } else {
+            toast.error(response.data.msg);
+        }
+    } catch (error) {
+        console.error("Error fetching analytics record:", error);
+        toast.error("Failed to fetch analytics records. Please try again.");
+    }
+});
+
+
+export const reqFetchAssesorDropDown = createAsyncThunk("reqFetchAssesorDropDown", async (id) => {
+    try {
+        
+       
+        const url = `${apiendpoints.getAssessorDropDown.replace(":id", id)}`;
+
+        const response = await Axios.get(url, authCommonHeader());
+
+        // Check if response contains data
+        if (response.data) {
+            return response.data;  // Return the data to be handled in Redux
+        } else {
+            toast.error(response.data.msg);
+        }
+    } catch (error) {
+        console.error("Error fetching analytics record:", error);
+        toast.error("Failed to fetch analytics records. Please try again.");
+    }
+});
+
+

@@ -18,6 +18,7 @@ import { useDisablePrevDate } from "../../../hooks/useDisablePrevDate";
 import { Link } from "react-router-dom";
 import StateStatusChart from "./StateStatusChart";
 import JobRoleStatusChart from "./JobRoleStatusChart";
+import { reqFetchAssesorDropDown } from "../../../reduxToolkit/services/analyticsRecordServices";
 
 const AssessorsAnalytics = () => {
     const dispatch = useDispatch();
@@ -28,6 +29,10 @@ const AssessorsAnalytics = () => {
 
     const contentManagementReducer = useSelector((state) => state.contentManagement);
     const { sectorDropDown, clientJobRoleDropDown, clientBatchDropDown } = contentManagementReducer;
+
+    const analyticsRecordsReducer = useSelector((state) => state.AnalyticsMangement);
+    const { stateCount, batchCount, districtCount, candidateCount, jobRoleStatus, stateBatchStatus } = analyticsRecordsReducer;
+
 
     // useRef
     const contentPdf = useRef();
@@ -43,6 +48,9 @@ const AssessorsAnalytics = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [assessorsDropDown, setAssessorsDropDown] = useState([]);
+    
+    const [selectedSector, setSelectedSector] = useState("");
 
     // handleModalShow
     const handleModalShow = (type, data = null) => {
@@ -94,7 +102,22 @@ const AssessorsAnalytics = () => {
         dispatch(reqToGetSectorDropDown());
         dispatch(reqToGetClientJobRoleDropDown());
         dispatch(reqToGetBatchDropDown());
+        fetchAssessors()
     }, []);
+
+
+    const fetchAssessors = async () => {
+        const data = await dispatch(reqFetchAssesorDropDown("66867238c57456d8ba93a6d9"));
+        setAssessorsDropDown(data.payload.data)
+    }
+
+    // Handle sector dropdown change
+  const handleSectorChange = (e) => {
+    const sectorId = e.target.value;
+    setSelectedSector(sectorId); // Update the selected sector
+    fetchAssessors(sectorId);    // Fetch assessors based on selected sector
+  };
+
 
     return (
         <>
@@ -109,7 +132,7 @@ const AssessorsAnalytics = () => {
                                 <label htmlFor="sectorType" className="form-label mb-2">
                                     Sector
                                 </label>
-                                <select className="form-select">
+                                <select className="form-select" onChange={handleSectorChange} value={selectedSector}>
                                     <option value="">All</option>
                                     {sectorDropDown?.map((item) => {
                                         return (
@@ -128,9 +151,14 @@ const AssessorsAnalytics = () => {
                                 </label>
                                 <select className="form-select">
                                     <option value="">All</option>
-                                    <option value="1">a</option>
-                                    <option value="2">b</option>
-                                    <option value="3">c</option>
+                                    {
+                                        assessorsDropDown?.map((item) => {
+                                            return (
+                                                <option value={item?._id} key={item?._id}>
+                                                    {item?.firstName}
+                                                </option>
+                                            );
+                                        })}
                                 </select>
                             </div>
                         </div>
@@ -251,8 +279,8 @@ const AssessorsAnalytics = () => {
                         </div>
                     </div>
                 </div>
-                {/* <StateStatusChart /> */}
-                {/* <JobRoleStatusChart /> */}
+                <StateStatusChart />
+                <JobRoleStatusChart />
             </section>
         </>
     );

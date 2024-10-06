@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { reqFetchAnalyticsRecord, reqFetchQuestionAnalyticsRecord } from '../services/analyticsRecordServices';
+import { reqFetchAnalyticsRecord, reqFetchQuestionAnalyticsRecord,reqFetchQuestionDropDown,reqFetchAssesorDropDown } from '../services/analyticsRecordServices';
 // Async thunk for fetching analytics data
 
 
@@ -12,7 +12,8 @@ const initialState = {
     totalStates: 0,
     loading: false,
     error: null,
-    questionAnalyitcs: []
+    questionAnalyitcs: [],
+    questionDropDown:[]
 
 }
 
@@ -58,6 +59,37 @@ const analyticsSlice = createSlice({
             state.loading = false;
             state.error = action.error.message;
         });
+
+        //Question DropDown 
+        builder.addCase(reqFetchQuestionDropDown.pending, (state) => {
+            state.loading = true;
+            state.error = null; // Reset error on new fetch
+        })
+        builder.addCase(reqFetchQuestionDropDown.fulfilled, (state, action) => {
+            state.loading = false;
+            state.questionDropDown = action.payload.data;
+        })
+        builder.addCase(reqFetchQuestionDropDown.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        });
+
+        //Assessors
+
+        builder.addCase(reqFetchAssesorDropDown.pending, (state) => {
+            state.loading = true;
+            state.error = null; // Reset error on new fetch
+        })
+        builder.addCase(reqFetchAssesorDropDown.fulfilled, (state, action) => {
+            state.loading = false;
+            state.questionDropDown = action.payload.data;
+        })
+        builder.addCase(reqFetchAssesorDropDown.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        });
+
+        
 
     },
 });

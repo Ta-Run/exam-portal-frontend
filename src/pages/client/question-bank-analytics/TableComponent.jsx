@@ -2,7 +2,7 @@ import React from 'react'
 import { SVGICON } from '../../../constants/IconList'
 
 const TableComponent = ({  currentPage, itemsPerPage, questionData }) => {
-    console.log(questionData)
+    console.log(questionData,'data')
     return (
         <table className="table content-table" id='client-sector-table'>
             <thead>
@@ -61,12 +61,8 @@ const TableComponent = ({  currentPage, itemsPerPage, questionData }) => {
             </tbody> */}
             <tbody>
                 {questionData && questionData.map((item, index) => {
-                    // console.log(item.questionsData.optionA)
-                    // console.log(item.questionsData.optionB)
-                    // const questionsOp={
-                    // questionsData.question.Optio
-                    // }
-                    const { optionA, optionB, optionC, optionD } = item.questionsData
+                       console.log('itemss',item)
+                    const { optionA, optionB, optionC, optionD } = item
                     const serialNumber = (currentPage - 1) * itemsPerPage + index + 1;
 
                     return (
@@ -75,7 +71,7 @@ const TableComponent = ({  currentPage, itemsPerPage, questionData }) => {
                                 <h5 className="table_desc">{serialNumber}</h5>
                             </td>
                             <td>
-                                <h5 className="table_desc">{item?.questionsData.question}</h5>
+                                <h5 className="table_desc">{item?.question}</h5>
                             </td>
                             <td>
                                 <h5 className="table_desc">
