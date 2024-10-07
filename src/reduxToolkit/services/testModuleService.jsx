@@ -28,7 +28,7 @@ export const reqToFetchCandidateDocumentDetails = createAsyncThunk("reqToFetchCa
 
     try {
         const response = await Axios.get(`${apiendpoints.getCondidateDocument.replace(":id", id)}`, authCommonHeader());
-         console.log(response)
+        //  console.log(response)
         if (response.data) {
             return response.data;
         } else {
@@ -60,18 +60,21 @@ export const reqToFetchCandidateDocumentDetails = createAsyncThunk("reqToFetchCa
 export const reqToSubmitAnswer = createAsyncThunk("reqToSubmitAnswer", async (data) => {
 
     try {
-        const response = await Axios.post(apiendpoints.addClientCandidate, data, authCommonHeader());
+        const response = await Axios.post(apiendpoints.submitExamAnswer, data, authCommonHeader());
 
-             console.log('response',response)
+             console.log("call the api submiy"+response)
         if (response.data.res) {
             return response.data;
         } else {
             toast.error(response.data.msg);
+            throw new Error(response.data.msg);
         }
     } catch (error) {
         console.log(error);
+        throw error;
     }
 })
+
 
 
 

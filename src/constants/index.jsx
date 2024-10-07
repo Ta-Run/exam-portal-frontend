@@ -153,6 +153,9 @@ export const apiendpoints = {
     //>>>>>>>>>>>>>>>>>>>>> mis- Report >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
    getclientReportModule: "reports/getMisReports",
 
+   //++++++++++++++
+   submitExamAnswer:"exam/submit-exam"
+
 }
 
 export const messages = {
