@@ -1,12 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { apiendpoints } from '../../constants/index'; // Ensure correct import
+import Axios, { authClientHeader, authClientHeaderImage, authCommonHeader, authCommonHeaderImage } from "../helper/axios";
 
 export const clientReportModule = createAsyncThunk(
   "clientReportModule",
-  async ({ id, startTime, endTime }) => {
+  async ({ startTime, endTime }) => {
     try {
-      const response = await axios.get(
+      const response = await Axios.get(
         `${apiendpoints.getclientReportModule}?startTime=${startTime}&endTime=${endTime}`,
         authCommonHeader()
       );

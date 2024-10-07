@@ -29,6 +29,7 @@ const analyticsSlice = createSlice({
                 state.error = null; // Reset error on new fetch
             })
             .addCase(reqFetchAnalyticsRecord.fulfilled, (state, action) => {
+                console.log('action',action)
                 state.loading = false;
                 state.stateCount = action.payload.totalStates;
                 state.batchCount = action.payload.totalBatches;

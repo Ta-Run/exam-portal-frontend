@@ -75,10 +75,12 @@ function TestModule() {
 
         const newResponse = {
             questionBankId: currentQuestion.questionBankId,
-            nosId: currentQuestion.nosId,
-            selectedOption: selectedValue,
-            question: currentQuestion.question,
-            questionId: currentQuestion._id
+            answer: [{
+                userAnswer: selectedValue,
+                questionId: currentQuestion._id
+            }
+            ],
+
         };
 
         let updatedResponses;
@@ -103,13 +105,15 @@ function TestModule() {
             const parsedData = JSON.parse(token);
             const userToken = parsedData && parsedData.client ? JSON.parse(parsedData.client)?.authentication?.accessToken : null;
 
+
+            console.log('responses', responses)
             const answerResponse = await axios.post('http://localhost:4000/api/v1/exam/submit-exam', responses, {
                 headers: {
                     Authorization: `Bearer ${userToken}`
                 },
             });
-            
-            
+
+
 
             if (answerResponse) {
                 toast.success('Submitted answer');
@@ -120,11 +124,11 @@ function TestModule() {
 
             }
 
-            if(answerResponse.status === 200)   {
-                console.log('submit-exam',answerResponse.status)
+            if (answerResponse.status === 200) {
+                console.log('submit-exam', answerResponse.status)
                 console.log('exam submit succesfully')
                 navigate('/client/test-modules/UploadDocument');
-             }
+            }
         } catch (error) {
             console.error('Error submitting exam:', error);
         }

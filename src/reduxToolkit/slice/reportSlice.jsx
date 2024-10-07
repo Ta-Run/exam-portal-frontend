@@ -8,7 +8,7 @@ const initialState = {
 };
 
 const reportSlice = createSlice({
-  name: 'reports',
+  name: 'report',
   initialState,
   reducers: {},
   extraReducers: (builder) => {

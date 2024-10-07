@@ -15,7 +15,7 @@ import AddManageBatch from "../../../components/offcanvas/manage-batch/AddManage
 import EditManageBatch from './../../../components/offcanvas/manage-batch/EditManageBatch';
 import { reqToDeleteClientManageBatch, reqToGetClientManageBatch } from "../../../reduxToolkit/services/assessmentServices";
 import { useDisablePrevDate } from "../../../hooks/useDisablePrevDate";
-import { clientReportModule } from "../../../reduxToolkit/services/reportServices"; 
+import { clientReportModule } from "../../../reduxToolkit/services/reportServices";
 
 const MisReport = () => {
     const dispatch = useDispatch();
@@ -41,7 +41,9 @@ const MisReport = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
-
+    const [reportData, setReportData] = useState([])
+    const [startDate, setStartDate] = useState("")
+    const [endDate, setEndDate] = useState("")
     // handleModalShow
     const handleModalShow = (type, data = null) => {
         setModalShow({ ...modalShow, [type]: true });
@@ -58,6 +60,13 @@ const MisReport = () => {
         });
     };
 
+    const handleDate = (e,type) => {
+        if (type === 'start') {
+            setStartDate(e.target.value);
+        } else if (type === 'end') {
+            setEndDate(e.target.value);
+        }
+    }
     // handleGetManageBatch
     const handleGetManageBatch = async () => {
         await dispatch(reqToGetClientManageBatch({ page: currentPage, limit: itemsPerPage }));
@@ -92,12 +101,25 @@ const MisReport = () => {
         dispatch(reqToGetSectorDropDown());
         dispatch(reqToGetClientJobRoleDropDown());
         dispatch(reqToGetBatchDropDown());
-        dispatch(clientReportModule());
-        
+
     }, []);
 
-    
 
+    const handleReports = async () => {
+
+        console.log(startDate, endDate)
+        const data = await dispatch(clientReportModule(
+
+            {
+                startTime: startDate,
+                endTime: endDate
+            }
+        ));
+
+        setReportData(data.payload.data)
+        console.log('reports data ',)
+
+    }
     // Change page
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -114,7 +136,9 @@ const MisReport = () => {
                                 <label htmlFor="sectorType" className="form-label mb-2">
                                     From Date
                                 </label>
-                                <input type="date" className="form-date-select" />
+                                <input type="date" className="form-date-select"
+                                    value={startDate} onChange={e => handleDate(e,'start')} />
+
                             </div>
                         </div>
                         <div className="col-lg-3 mb-lg-0 mb-4">
@@ -122,11 +146,13 @@ const MisReport = () => {
                                 <label htmlFor="sectorType" className="form-label mb-2">
                                     To Date
                                 </label>
-                                <input type="date" className="form-date-select" />
+                                <input type="date" className="form-date-select" value={endDate} onChange={e => handleDate(e ,'end')} />
                             </div>
                         </div>
                         <div className="col-lg-3">
-                            <button type="button" className="delete-btn me-3">View</button>
+                            <button type="button" className="delete-btn me-3"
+                                onClick={handleReports}
+                            >View</button>
                         </div>
                     </div>
                 </div>
@@ -170,7 +196,9 @@ const MisReport = () => {
                 </div>
                 <div className="batch-upload-table">
                     <div className="table-responsive" ref={contentPdf}>
-                        <TableComponent filterData={filterData} handleModalShow={handleModalShow} currentPage={currentPage} itemsPerPage={itemsPerPage} />
+                        <TableComponent filterData={filterData} handleModalShow={handleModalShow} currentPage={currentPage} itemsPerPage={itemsPerPage}
+                            reportData={reportData}
+                        />
                     </div>
                     {/* {filterData?.length === 0 && (
             <div className="text-center pt-3">
