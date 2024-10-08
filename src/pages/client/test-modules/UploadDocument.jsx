@@ -32,7 +32,7 @@ const UploadDocument = () => {
     setLoading(true); // Start loading
     try {
       const data = await dispatch(reqToFetchClientExamDetails());
-
+     console.log(data.payload)
       if (data.payload) {
         setClientDetail(data.payload.data[0]);
       }
@@ -77,10 +77,10 @@ const UploadDocument = () => {
 
     try {
       const response = await dispatch(reqToUploadClientDocument(formData));
-      console.log("response", response);
-
-      if (response.payload) {
-        toast.success(response.payload.msg);
+    
+      if (response.payload.res) {
+        console.log('response',response.payload)
+        toast.success(response.payload);
         navigate(`/client/test-modules/TestModule/${id}`, {
           state: clientDetail.clientId,
         });

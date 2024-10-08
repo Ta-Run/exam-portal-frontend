@@ -29,7 +29,7 @@ function TestModule() {
   const location = useLocation();
   const clientId = location.state || {};
   const navigate = useNavigate();
-
+   console.log('id by params',id)
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -71,47 +71,44 @@ function TestModule() {
 
   const handleOptionChange = (e) => {
     const selectedValue = e.target.value;
-
+  
     setSelectedOption(selectedValue);
-
+  
     const currentQuestion = questions[selectedQuestion];
-
+  
     if (!currentQuestion) {
-        console.error('No current question found');
-        return;
+      console.error('No current question found');
+      return;
     }
-
+  
+    // Find if a response for the current question already exists
     const existingResponseIndex = responses.findIndex(
       (response) => response.questionId === currentQuestion._id
     );
-
+  
+    // Construct the new response object with the correct structure
     const newResponse = {
-      questionBankId: currentQuestion.questionBankId,
-      answer: [
-        {
-          userAnswer: selectedValue,
-          questionId: currentQuestion._id,
-        },
-      ],
+      questionId: currentQuestion._id,    // The current question's ID
+      userAnswer: selectedValue           // The user's selected answer
     };
-
+  
+    console.log('newResponse', newResponse);
+  
     let updatedResponses;
+  
+    // If the response for the current question already exists, update it
     if (existingResponseIndex > -1) {
-        updatedResponses = [...responses];
-        updatedResponses[existingResponseIndex] = newResponse;
+      updatedResponses = [...responses];
+      updatedResponses[existingResponseIndex] = newResponse;
     } else {
-        updatedResponses = [...responses, newResponse];
+      // If not, add the new response to the array
+      updatedResponses = [...responses, newResponse];
     }
-
-    // Log the updated responses array
-    console.log('Updated Responses (array):', updatedResponses);
-
-    // Ensure that setResponses is called with an array
+  
+    // Update the state with the new responses array
     setResponses(updatedResponses);
-
-    // Check the responses state after it's been updated
-    console.log('Responses State (after update):', responses);
-};
+  };
+  
 
 
 
@@ -126,48 +123,46 @@ function TestModule() {
 
   const handleSubmit = async () => {
     try {
-      // const token = localStorage.getItem("persist:client");
-      // const parsedData = JSON.parse(token);
-      // const userToken = parsedData && parsedData.client ? JSON.parse(parsedData.client)?.authentication?.accessToken : null;
-
-      // if (!userToken) {
-      //     throw new Error("Token not found.");
-      // }
-
-      // console.log('responses', responses);
-
-      // Dispatch the reqToSubmitAnswer thunk and send responses as the payload
-      const resultAction = await dispatch(reqToSubmitAnswer(responses));
-      // console.log("after the submiy "+ resultAction);
+      // Check the dynamically updated responses state
+      console.log('Responses State (after update):', responses);
+  
+      const resultAction = await dispatch(reqToSubmitAnswer({
+        questionBankId: id,  // The fixed question bank ID
+        answers: responses                          // The dynamically constructed responses
+      }));
+  
       if (reqToSubmitAnswer.fulfilled.match(resultAction)) {
-        // If the API call is successful
         toast.success("Answer submitted successfully");
-        handleClick(); // Call the function to show the popup
+        handleClick();
         setSelectedOption(null);
-        setResponses([]);
-        setSelectedQuestion(0);
-
+        setResponses([]);        // Reset responses state
+        setSelectedQuestion(0);  // Reset selected question
+  
         // Check the status and navigate
-        if (resultAction.payload.status === 200) {
-          console.log("submit-exam", resultAction.payload.status);
+        console.log('statys',resultAction)
+        if (resultAction.payload.resultAns) {
+          console.log("submit-exam", resultAction.paylod);
           console.log("Exam successfully submitted");
-          navigate("/client/test-modules/UploadDocument");
+          setTimeout(() => {
+            navigate("/client/test-modules/UploadDocument");  
+          }, 2000);
+          
         }
       } else if (reqToSubmitAnswer.rejected.match(resultAction)) {
-        // If the API call fails
         console.error("Error submitting exam:", resultAction.error.message);
       }
     } catch (error) {
       console.error("Error submitting exam:", error);
     }
   };
+  
 
   const handleClick = () => {
     setShowPopup(true);
   };
 
   const closePopup = () => {
-    setShowPopup(false);
+    navigate("/client/test-modules/UploadDocument");  
   };
 
   const getOptionStyle = (option) => {

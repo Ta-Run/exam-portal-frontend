@@ -28,19 +28,18 @@ export const reqToFetchCandidateDocumentDetails = createAsyncThunk("reqToFetchCa
 
     try {
         const response = await Axios.get(`${apiendpoints.getCondidateDocument.replace(":id", id)}`, authCommonHeader());
-        //  console.log(response)
+        console.log(response,'condidate serviceś')
         if (response.data) {
+            console.log(error);
             return response.data;
-        } else {
-            toast.error(response.data.msg);
-        }
-    } catch (error) {
-        console.log(error);
+        } 
     }
-})
-
-// //get exam details of client by cliend id 
-// export const reqToFetchClientExamDetails = createAsyncThunk("reqToFetchClientExamDetails", async (data) => {
+    catch (error) {
+    } 
+    })
+    
+    // //get exam details of client by cliend id 
+    // export const reqToFetchClientExamDetails = createAsyncThunk("reqToFetchClientExamDetails", async (data) => {
 
 //     try {
 //         const response = await Axios.get(`${apiendpoints.getExamClientDeatails}`, authCommonHeader());
@@ -62,13 +61,11 @@ export const reqToSubmitAnswer = createAsyncThunk("reqToSubmitAnswer", async (da
     try {
         const response = await Axios.post(apiendpoints.submitExamAnswer, data, authCommonHeader());
 
-             console.log("call the api submiy"+response)
-        if (response.data.res) {
+             console.log("call the api submit",response.data.resultAns)
+        if (response.data.resultAns) {
+            console.log(response.data.resultAns,'res')
             return response.data;
-        } else {
-            toast.error(response.data.msg);
-            throw new Error(response.data.msg);
-        }
+        } 
     } catch (error) {
         console.log(error);
         throw error;

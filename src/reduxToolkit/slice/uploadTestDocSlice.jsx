@@ -32,7 +32,6 @@ const UploadTestDocSlice = createSlice({
             state.loader = true;
         });
         builder.addCase(reqToUploadClientDocument.fulfilled, (state, action) => {
-            console.log(action);
             state.loader = false;
             state.clientdata = action.payload.msg
             ;
