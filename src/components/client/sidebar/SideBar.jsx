@@ -364,6 +364,14 @@ const SideBar = () => {
                       Batch Report
                     </NavLink>
                   </li>
+                  <li>
+                    <NavLink to={"/client/condidate-logs"}>
+                      <span>
+                        <i className="fa-solid fa-angle-right"></i>
+                      </span>
+                      Condidate Report
+                    </NavLink>
+                  </li>
                 </ul>
               </div>
             </Accordion.Body>
@@ -478,7 +486,7 @@ const SideBar = () => {
           </Accordion.Item>
 
         {/* test module */}
-        <Accordion.Item eventKey="8">
+        {/* <Accordion.Item eventKey="8">
             <Link className={`${isTestModule && "active"}`}>
               <Accordion.Header>
                 <span>{SVGICON.AnalyticsReportSvg}</span>
@@ -487,16 +495,7 @@ const SideBar = () => {
             </Link>
             <Accordion.Body>
               <div className="accordian-inner-navlists">
-                <ul>
-                  {/* <li>
-                    <NavLink to={"/client/test-modules/TestModule"}>
-                      <span>
-                        <i className="fa-solid fa-angle-right"></i>
-                      </span>
-                      Question Bank's 
-                    </NavLink>
-                  </li> */}
-                  
+                <ul>                  
                   <li>
                     <NavLink to={"/client/test-modules/UploadDocument"}>
                       <span>
@@ -505,11 +504,10 @@ const SideBar = () => {
                       Test Attempt
                     </NavLink>
                   </li>
-                 
                 </ul>
               </div>
             </Accordion.Body>
-          </Accordion.Item>
+          </Accordion.Item> */}
         </Accordion>
       </div>
     </div>

@@ -61,7 +61,9 @@ import SpocPersonLogin from "./pages/spoc-person/login/Login";
 //? ********************************** Child user **********************************
 
 import ChildUserLogin from "./pages/child-user/login/Login";
+import CandidateReport from "./pages/client/candidate log reports/CandidateReport";
 
+import StudentLogin from "./pages/client/studentlogin/StudentLogin";
 
 const App = () => {
 
@@ -73,6 +75,13 @@ const App = () => {
         <Route path="/client/login" element={<ClientLogin />} />
         <Route path="/spoc-person/login" element={<SpocPersonLogin />} />
         <Route path="/child-user/login" element={<ChildUserLogin />} />
+        <Route path="/student/login" element={<StudentLogin />} />
+
+        
+          {/* Test Module */}
+          <Route path="/student/TestModule/:id" element={<TestModule />} />
+          {/* Test Module */}
+          <Route path="/student/UploadDocument" element={<UploadDocument />} />
 
         {/* Admin Routes */}
         <Route element={<AdminLayout />}>
@@ -115,6 +124,7 @@ const App = () => {
           <Route path="/client/mis-report" element={<MisReport />} />
           <Route path="/client/batch-result" element={<BatchResult />} />
           <Route path="/client/batch-report" element={<BatchReport />} />
+          <Route path="/client/condidate-logs" element={<CandidateReport/>} />
           {/* Support */}
           <Route path="/client/open-ticket" element={<OpenTicket />} />
           <Route path="/client/closed-ticket" element={<ClosedTicket />} />
@@ -127,12 +137,6 @@ const App = () => {
           <Route path="/client/question-bank-analytics" element={<QuestionBankAnalytics />} />
           <Route path="/client/batchs-analytics" element={<BatchsAnalytics />} />
           <Route path="/client/job-roles-analytics" element={<JobRolesAnalytics />} />
-           {/* Test Module */}
-           <Route path="/client/test-modules/TestModule/:id" element={<TestModule />} />
-{/* Test Module */}
- <Route path="/client/test-modules/UploadDocument" element={<UploadDocument />} />
-
-
         </Route>
 
         {/* SPOC Person Routes */}
@@ -207,6 +211,7 @@ const App = () => {
           <Route path="/child-user/mis-report" element={<MisReport />} />
           <Route path="/child-user/batch-result" element={<BatchResult />} />
           <Route path="/child-user/batch-report" element={<BatchReport />} />
+          
           {/* Support */}
           {/* <Route path="/child-user/open-ticket" element={<OpenTicket />} />
           <Route path="/child-user/closed-ticket" element={<ClosedTicket />} />
@@ -220,7 +225,8 @@ const App = () => {
           <Route path="/child-user/batchs-analytics" element={<BatchsAnalytics />} />
           <Route path="/child-user/job-roles-analytics" element={<JobRolesAnalytics />} />
 
-         
+
+
 
         </Route>
 

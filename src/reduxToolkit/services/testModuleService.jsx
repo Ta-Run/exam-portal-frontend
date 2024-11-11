@@ -11,8 +11,8 @@ import { apiendpoints, messages } from "../../constants";
 export const reqToGetQuestionsModule = createAsyncThunk("reqToGetQuestionsModule", async (id) => {
 
     try {
-
-        const response = await Axios.get(`${apiendpoints.getTestModuleQuestion.replace(":id", id)}`, authCommonHeader());
+          console.log('id')
+        const response = await Axios.get(`${apiendpoints.getTestModuleQuestion.replace(":id", id)}`);
 
         if (response.data.res) {
             return response.data;
@@ -59,7 +59,7 @@ export const reqToFetchCandidateDocumentDetails = createAsyncThunk("reqToFetchCa
 export const reqToSubmitAnswer = createAsyncThunk("reqToSubmitAnswer", async (data) => {
 
     try {
-        const response = await Axios.post(apiendpoints.submitExamAnswer, data, authCommonHeader());
+        const response = await Axios.post(apiendpoints.submitExamAnswer, data);
 
              console.log("call the api submit",response.data.resultAns)
         if (response.data.resultAns) {

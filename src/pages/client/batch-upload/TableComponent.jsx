@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import moment from 'moment';
 
 const TableComponent = ({ selectAll, filterData, handleSelectAll, selectedItems, handleSelectItem, currentPage, itemsPerPage }) => {
 
@@ -33,6 +34,21 @@ const TableComponent = ({ selectAll, filterData, handleSelectAll, selectedItems,
                     </th>
                     <th>
                         <div className="d-flex align-items-center justify-content-center">
+                            Sector 
+                        </div>
+                    </th>
+                    <th>
+                        <div className="d-flex align-items-center justify-content-center">
+                            Job Role
+                        </div>
+                    </th>
+                    <th>
+                        <div className="d-flex align-items-center justify-content-center">
+                            Batch
+                        </div>
+                    </th>
+                    <th>
+                        <div className="d-flex align-items-center justify-content-center">
                             TCName
                         </div>
                     </th>
@@ -43,9 +59,20 @@ const TableComponent = ({ selectAll, filterData, handleSelectAll, selectedItems,
                     </th>
                     <th>
                         <div className="d-flex align-items-center justify-content-center">
+                             Start Date
+                        </div>
+                    </th>
+                    <th>
+                        <div className="d-flex align-items-center justify-content-center">
+                            End Date
+                        </div>
+                    </th>
+                    <th>
+                        <div className="d-flex align-items-center justify-content-center">
                             Start Time
                         </div>
                     </th>
+                    
                     <th>
                         <div className="d-flex align-items-center justify-content-center">
                             End Time
@@ -55,6 +82,11 @@ const TableComponent = ({ selectAll, filterData, handleSelectAll, selectedItems,
             </thead>
             <tbody>
                 {filterData?.map((item, index) => {
+                    console.log('item',item)
+
+                    console.log(item.startDate,'itemmmm')
+                    const startDate = moment(item?.startDate).format('YYYY-MM-DD');
+                    const endDate = moment(item?.endDate).format('YYYY-MM-DD');
                     const serialNumber = (currentPage - 1) * itemsPerPage + index + 1;
                     return (
                         <tr key={item?._id}>
@@ -76,10 +108,25 @@ const TableComponent = ({ selectAll, filterData, handleSelectAll, selectedItems,
                                 <h5 className="table_desc">{item?.district}</h5>
                             </td>
                             <td>
+                                <h5 className="table_desc">{item?.sectorName}</h5>
+                            </td>
+                            <td>
+                                <h5 className="table_desc">{item?.jobRoleName}</h5>
+                            </td>
+                            <td>
+                                <h5 className="table_desc">{item?.batchName}</h5>
+                            </td>
+                            <td>
                                 <h5 className="table_desc">{item?.TrainingCenterName}</h5>
                             </td>
                             <td>
                                 <h5 className="table_desc">{item?.TrainingPartnerEmail}</h5>
+                            </td>
+                            <td>
+                                <h5 className="table_desc">{startDate}</h5>
+                            </td>
+                            <td>
+                                <h5 className="table_desc">{endDate}</h5>
                             </td>
                             <td>
                                 <h5 className="table_desc">{item?.startTime}</h5>

@@ -26,8 +26,9 @@ export const reqToGetClientBatchUpload = createAsyncThunk("reqToGetClientBatchUp
 // reqToUploadClientBatchUpload
 export const reqToUploadClientBatchUpload = createAsyncThunk("reqToUploadClientBatchUpload", async (data) => {
     try {
-
+         console.log('data',data)
         const response = await Axios.post(apiendpoints.clientBatchUpload, data, authCommonHeaderImage());
+        console.log('resposne',response)
 
         if (response.data.res) {
             toast.success(messages.toast.sector.addClient);

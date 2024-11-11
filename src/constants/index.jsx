@@ -141,7 +141,7 @@ export const apiendpoints = {
 
     //**********Upload Test Document ***********/
     getExamClientDeatails: "/exam/clietnDetail",
-    uploadExamClientDoc:"/application/upload",
+    uploadExamClientDoc:"/candidate/upload",
 
         //   ***************** AnalyticsRecord Reports *****************
     getAnalyticsRecordsReport: "analytics/analyticReports/:id",

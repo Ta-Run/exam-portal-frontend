@@ -148,8 +148,8 @@ export const ManageCandidateHeader = [
 export const candidateBatchUploadHeader = [
     { label: "state", key: 'state' },
     { label: "district", key: 'district' },
-    { label: "jobRoleId", key: 'jobRoleId' },
-    { label: "assginedSectorsId", key: 'assginedSectorsId' },
+    { label: "jobRoleName", key: 'jobRoleName' },
+    { label: "sectorName", key: 'sectorName' },
     { label: "TrainingCenterName", key: 'TrainingCenterName' },
     { label: "TrainingPartnerEmail", key: 'TrainingPartnerEmail' },
     { label: "startTime", key: 'startTime' },
@@ -157,7 +157,7 @@ export const candidateBatchUploadHeader = [
     { label: "startDate", key: 'startDate' },
     { label: "endDate", key: 'endDate' },
     { label: "TotalCandidate", key: 'TotalCandidate' },
-    { label: "BatchCode", key: 'BatchCode' },
+    { label: "batchName", key: 'batchName' },
     { label: "photo", key: 'photo' },
     { label: "video", key: 'video' },
 ]

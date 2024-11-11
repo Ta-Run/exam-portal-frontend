@@ -18,32 +18,17 @@ const UploadDocument = () => {
   const [candidateDocument, setCandidateDocument] = useState(null);
   const [error, setError] = useState("");
   const [clientDetail, setClientDetail] = useState([]);
-
+  const [cadidateInfo ,setCandidateInfo]=useState('')
+  const [jobRole,setJobRole]= useState('')
   const [loading, setLoading] = useState(true); // Initial loading state is true
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const id = clientDetail._id;
-
-  useEffect(() => {
-    getClientExamDetails();
-  }, []);
-
-  const getClientExamDetails = async () => {
-    setLoading(true); // Start loading
-    try {
-      const data = await dispatch(reqToFetchClientExamDetails());
-     console.log(data.payload)
-      if (data.payload) {
-        setClientDetail(data.payload.data[0]);
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      setError("An error occurred: " + err.message);
-    } finally {
-      setLoading(false); // Stop loading once the request completes
-    }
-  };
-
+  
+  const candidateData = JSON.parse(localStorage.getItem("candidateData"));
+  console.log(candidateData.candidate);
+  const candidatejobRole = candidateData.candidate.job_Role; // This is your 
+  const questionBankId = candidateData.candidate.questionBankId; // This is your sectorId
+  
   const handleFileChange = (event) => {
     const file = event.target.files[0];
 
@@ -73,17 +58,18 @@ const UploadDocument = () => {
       formData.append("yourDocument", candidateDocument);
     }
 
-    formData.append("accessCode", 1234);
+    formData.append("candidateId", candidateData.candidate.id);
 
     try {
+
+      // navigate(`/student/TestModule`)
+
       const response = await dispatch(reqToUploadClientDocument(formData));
-    
+
       if (response.payload.res) {
-        console.log('response',response.payload)
+        console.log('oddd',cadidateInfo)
         toast.success(response.payload);
-        navigate(`/client/test-modules/TestModule/${id}`, {
-          state: clientDetail.clientId,
-        });
+        navigate(`/student/TestModule/${questionBankId}`)
       } else {
         toast.error("Please upload the document properly.");
       }
@@ -99,15 +85,16 @@ const UploadDocument = () => {
 
   return (
     <div>
-      {loading ? (
-        <Loader /> // Show loader when data is being fetched
-      ) : (
+      {/* {loading ? (
+      <>aaoom</>      
+      // Show loader when data is being fetched
+      ) : ( */}
         <>
           <Header name="UploadDocument" />
           <div className="upload-docs-class">
             <div className="instruction-class">
               <div className="header-row">
-                <div className="sub-name">{clientDetail.jobRoleName}</div>
+                <div className="sub-name">{candidatejobRole}</div>
                 <div className="time-duration">Time Allowed: 60 min</div>
               </div>
 
@@ -213,7 +200,7 @@ const UploadDocument = () => {
             </div>
           </div>
         </>
-      )}
+      {/* )} */}
     </div>
   );
 };
